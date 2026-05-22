@@ -1,0 +1,43 @@
+<!--
+  ════════════════════════════════════════════════════════
+  GERADOR DE RÓTULOS — Embed para Hotmart Pages
+  ════════════════════════════════════════════════════════
+  Cole o bloco abaixo em um bloco "HTML personalizado"
+  dentro do Hotmart Pages.
+  ════════════════════════════════════════════════════════
+-->
+
+<style>
+  #hc-frame-wrap {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  #hc-frame {
+    width: 100%;
+    border: none;
+    display: block;
+    height: 600px;
+    transition: height 0.2s ease;
+  }
+</style>
+
+<div id="hc-frame-wrap">
+  <iframe
+    id="hc-frame"
+    src="https://rafaelcalaispenido.github.io/label-generator/"
+    scrolling="no"
+    allowtransparency="true"
+    title="Gerador de Rótulos Help Center"
+  ></iframe>
+</div>
+
+<script>
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.type !== 'hc-resize') return;
+    var frame = document.getElementById('hc-frame');
+    if (frame) {
+      frame.style.height = (e.data.height + 32) + 'px';
+    }
+  });
+</script>
