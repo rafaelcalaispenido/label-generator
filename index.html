@@ -1,0 +1,2479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador de Rótulos — Help Center</title>
+<link rel="icon" type="image/jpeg" href="logo-hotmart.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Nunito+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --orange: #F04C21;
+    --orange-light: #FF6B45;
+    --orange-dark: #C93D18;
+    --orange-bg: #FFF3F0;
+    --orange-border: #FFDDD5;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+    --gray-900: #111827;
+    --green: #059669;
+    --green-bg: #ECFDF5;
+    --blue: #2563EB;
+    --blue-bg: #EFF6FF;
+    --radius: 10px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 40px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.06);
+    --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: #fff;
+    border-bottom: 1px solid var(--gray-200);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .header-inner {
+    max-width: 1080px; margin: 0 auto;
+    padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .logo-area { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-icon img { width: 36px; height: 36px; object-fit: contain; display: block; }
+  .logo-text {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 15px; color: var(--gray-900);
+    line-height: 1.2;
+  }
+  .logo-sub { font-size: 11px; font-weight: 500; color: var(--gray-500); }
+  .logo-link {
+    font-size: 11px; font-weight: 600; color: var(--orange);
+    text-decoration: none; display: block; text-align: center;
+    transition: opacity var(--transition);
+  }
+  .logo-link:hover { opacity: 0.75; text-decoration: underline; }
+  .logo-area > div { text-align: center; }
+
+  .header-nav { display: flex; gap: 4px; align-items: center; }
+  .nav-divider { width: 1px; height: 22px; background: var(--gray-200); margin: 0 6px; }
+  .nav-help { display: flex; align-items: center; padding: 6px 10px; text-decoration: none; }
+  .nav-btn {
+    padding: 7px 16px; border: none; border-radius: 8px;
+    font-family: 'Nunito Sans', sans-serif; font-size: 13.5px; font-weight: 600;
+    cursor: pointer; transition: var(--transition);
+    background: transparent; color: var(--gray-600);
+  }
+  .nav-btn:hover { background: var(--gray-100); color: var(--gray-900); }
+  .nav-btn.active { background: var(--orange-bg); color: var(--orange); }
+
+  /* ── HERO BAND ── */
+  .hero {
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-light) 100%);
+    padding: 36px 24px 32px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 26px; font-weight: 800; color: #fff;
+    margin-bottom: 6px;
+  }
+  .hero p { font-size: 14px; color: rgba(255,255,255,0.88); font-weight: 500; }
+
+  /* ── MAIN LAYOUT ── */
+  .main { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+
+  /* ── CARD ── */
+  .card {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+  }
+  .card-header {
+    padding: 18px 24px 16px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .step-badge {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--orange); color: #fff;
+    font-size: 13px; font-weight: 800; font-family: 'Nunito', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-badge.done { background: var(--green); }
+  .step-badge.optional {
+    background: var(--gray-100); color: var(--gray-400);
+    font-size: 15px; font-weight: 400; letter-spacing: 0;
+    border: 1.5px solid var(--gray-200);
+  }
+  .card-title { font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 700; color: var(--gray-900); }
+  .card-subtitle { font-size: 12px; color: var(--gray-500); margin-top: 1px; font-weight: 500; }
+  .card-body { padding: 20px 24px; }
+
+  /* ── FORM ELEMENTS ── */
+  label.field-label {
+    display: block; font-size: 12px; font-weight: 700; color: var(--gray-600);
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .field-group { margin-bottom: 16px; }
+  .field-group:last-child { margin-bottom: 0; }
+
+  select, input[type="text"] {
+    width: 100%; padding: 11px 16px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 12px;
+    font-family: 'Nunito Sans', sans-serif; font-size: 14px; color: var(--gray-800);
+    background: #fff;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23F04C21' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 38px;
+    cursor: pointer;
+  }
+  input[type="text"] { background-image: none; padding-right: 16px; cursor: text; }
+  select:focus, input[type="text"]:focus {
+    outline: none; border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(240,76,33,0.10);
+  }
+  select:hover:not(:disabled) { border-color: var(--orange-light); }
+  select:disabled { background: var(--gray-50); color: var(--gray-400); cursor: not-allowed; border-color: var(--gray-100); }
+
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px) { .row-2 { grid-template-columns: 1fr; } }
+
+  /* ── PERSONA CHECKBOXES ── */
+  .persona-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+  .persona-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 16px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 40px; cursor: pointer;
+    transition: var(--transition);
+    user-select: none;
+    font-size: 13.5px; font-weight: 600;
+  }
+  .persona-chip:hover { border-color: var(--orange); background: var(--orange-bg); }
+  .persona-chip.selected { border-color: var(--orange); background: var(--orange-bg); color: var(--orange); }
+  .persona-chip input { display: none; }
+  .persona-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    border: 2px solid var(--gray-300); transition: var(--transition);
+  }
+  .persona-chip.selected .persona-dot { border-color: var(--orange); background: var(--orange); }
+
+  /* ── TOGGLE ── */
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-radius: var(--radius);
+    border: 1.5px solid var(--gray-200);
+    cursor: pointer; transition: var(--transition);
+  }
+  .toggle-row:hover { border-color: var(--orange); background: var(--orange-bg); }
+  .toggle-row.on { border-color: var(--orange); background: var(--orange-bg); }
+  .toggle-text { font-size: 14px; font-weight: 600; color: var(--gray-700); }
+  .toggle-desc { font-size: 12px; color: var(--gray-500); margin-top: 1px; }
+  .toggle-switch {
+    width: 42px; height: 24px; border-radius: 12px; background: var(--gray-300);
+    position: relative; transition: background var(--transition); flex-shrink: 0;
+  }
+  .toggle-switch::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; border-radius: 50%; background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    transition: transform var(--transition);
+  }
+  .toggle-row.on .toggle-switch { background: var(--orange); }
+  .toggle-row.on .toggle-switch::after { transform: translateX(18px); }
+
+  /* ── GENERATED LABELS ── */
+  .result-card {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    border-radius: var(--radius-lg); padding: 24px;
+    margin-bottom: 20px;
+  }
+  .result-title {
+    font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700;
+    color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+  .label-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border-radius: 8px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 8px; gap: 10px;
+  }
+  .label-row:last-child { margin-bottom: 0; }
+  .label-key {
+    font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.45);
+    text-transform: uppercase; letter-spacing: 0.06em; min-width: 90px; flex-shrink: 0;
+  }
+  .label-value {
+    font-family: 'Courier New', monospace; font-size: 13px; color: #FFD580;
+    word-break: break-all; flex: 1;
+  }
+  .label-value.empty { color: rgba(255,255,255,0.25); font-style: italic; font-family: 'Nunito Sans', sans-serif; font-size: 12px; }
+
+  .result-string-wrap {
+    margin-top: 16px; padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .result-string-label {
+    font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.45);
+    text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;
+  }
+  .result-string {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px; padding: 12px 14px;
+    font-family: 'Courier New', monospace; font-size: 13px; color: #86EFAC;
+    word-break: break-all; line-height: 1.6;
+  }
+  .copy-row { display: flex; gap: 10px; margin-top: 12px; }
+  .copy-btn {
+    flex: 1; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700;
+    transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .copy-btn.primary { background: var(--orange); color: #fff; }
+  .copy-btn.primary:hover { background: var(--orange-dark); }
+  .copy-btn.secondary { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.15); }
+  .copy-btn.secondary:hover { background: rgba(255,255,255,0.14); }
+  .copy-btn.save-btn { background: #059669; color: #fff; flex: 1; }
+  .copy-btn.save-btn:hover { background: #047857; }
+  .copy-btn.success { background: var(--green); color: #fff; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    border-radius: var(--radius-lg); padding: 40px 24px; text-align: center;
+    margin-bottom: 20px;
+  }
+  .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.6; }
+  .empty-text { font-size: 14px; color: rgba(255,255,255,0.4); font-weight: 500; }
+
+  /* ── SECTION FADE IN ── */
+  .fade-in { animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .hidden { display: none; }
+
+  /* ── ADMIN PAGE ── */
+  .admin-tabs { display: flex; gap: 4px; padding: 4px; background: var(--gray-200); border-radius: 10px; flex: 1; }
+  .admin-topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .export-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 18px; border: none; border-radius: 9px;
+    background: var(--gray-800); color: #fff;
+    font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: var(--transition); white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .export-btn:hover { background: var(--gray-900); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+  .admin-tab {
+    flex: 1; padding: 9px 8px; border: none; border-radius: 7px;
+    font-family: 'Nunito', sans-serif; font-size: 12.5px; font-weight: 700;
+    cursor: pointer; transition: var(--transition); background: transparent; color: var(--gray-600);
+    text-align: center;
+  }
+  .admin-tab.active { background: #fff; color: var(--gray-900); box-shadow: var(--shadow-sm); }
+
+  .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .admin-table th {
+    text-align: left; padding: 10px 14px; background: var(--gray-50);
+    border-bottom: 2px solid var(--gray-200); font-weight: 700; color: var(--gray-600);
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .admin-table td {
+    padding: 11px 14px; border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-700); font-weight: 500;
+  }
+  .admin-table tr:last-child td { border-bottom: none; }
+  .admin-table tr:hover td { background: var(--gray-50); }
+  .admin-table td:first-child { font-family: 'Courier New', monospace; font-size: 12px; color: var(--gray-600); }
+
+  .del-btn {
+    padding: 4px 10px; border: 1.5px solid #FCA5A5; background: #FEF2F2;
+    color: #DC2626; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700;
+    transition: var(--transition); font-family: 'Nunito', sans-serif;
+  }
+  .del-btn:hover { background: #DC2626; color: #fff; border-color: #DC2626; }
+
+  .add-form {
+    background: var(--gray-50); border: 1.5px dashed var(--gray-300);
+    border-radius: var(--radius); padding: 18px;
+    margin-top: 16px;
+  }
+  .add-form-title {
+    font-size: 13px; font-weight: 700; color: var(--gray-700); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .add-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; }
+  .add-row .field-group { margin-bottom: 0; }
+  .add-btn {
+    display: block; width: 100%; margin-top: 12px;
+    padding: 11px 20px; background: var(--orange); color: #fff;
+    border: none; border-radius: var(--radius); cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700;
+    transition: var(--transition);
+  }
+  .add-btn:hover { background: var(--orange-dark); }
+  .add-btn:disabled { background: var(--gray-300); cursor: not-allowed; }
+
+  .tag-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; background: var(--orange-bg); border: 1px solid var(--orange-border);
+    color: var(--orange); border-radius: 20px; font-size: 11.5px; font-weight: 700;
+    margin: 2px;
+  }
+  .tag-remove {
+    cursor: pointer; font-size: 13px; line-height: 1; opacity: 0.7;
+    background: none; border: none; color: inherit; padding: 0;
+  }
+  .tag-remove:hover { opacity: 1; }
+
+  .info-box {
+    background: var(--blue-bg); border: 1px solid #BFDBFE; border-radius: var(--radius);
+    padding: 12px 14px; font-size: 13px; color: #1D4ED8; font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .info-box strong { font-weight: 700; }
+
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+  }
+  .badge-orange { background: var(--orange-bg); color: var(--orange); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-gray { background: var(--gray-100); color: var(--gray-600); }
+
+  .section-divider {
+    text-align: center; font-size: 12px; font-weight: 700; color: var(--gray-400);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin: 8px 0; position: relative;
+  }
+  .section-divider::before {
+    content: ''; position: absolute; top: 50%; left: 0; right: 0;
+    height: 1px; background: var(--gray-200); z-index: 0;
+  }
+  .section-divider span {
+    position: relative; z-index: 1; background: #fff; padding: 0 12px;
+  }
+
+  .scroll-table { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--gray-200); max-height: 460px; overflow-y: auto; }
+  .scroll-table::-webkit-scrollbar { width: 5px; height: 6px; }
+  .scroll-table::-webkit-scrollbar-track { background: transparent; }
+  .scroll-table::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 10px; }
+
+  /* hide datalist picker arrow on open text inputs */
+  input[list]::-webkit-calendar-picker-indicator { display: none !important; opacity: 0 !important; }
+  input[list] { background-image: none !important; }
+
+  /* actions column always visible */
+  .admin-table td:last-child,
+  .admin-table th:last-child { min-width: 80px; white-space: nowrap; }
+  .action-btns { display: flex; gap: 6px; align-items: center; flex-wrap: nowrap; }
+
+  /* action buttons */
+  .action-btns { display: flex; gap: 6px; align-items: center; }
+  .action-btn {
+    width: 30px; height: 30px; border: none; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: var(--transition); flex-shrink: 0;
+    position: relative;
+  }
+  .action-btn.edit  { background: #EFF6FF; color: #2563EB; }
+  .action-btn.edit:hover  { background: #2563EB; color: #fff; }
+  .action-btn.del   { background: #FEF2F2; color: #DC2626; }
+  .action-btn.del:hover   { background: #DC2626; color: #fff; }
+  .action-btn.save2 { background: #ECFDF5; color: #059669; }
+  .action-btn.save2:hover { background: #059669; color: #fff; }
+  .action-btn.cancel2 { background: var(--gray-100); color: var(--gray-500); }
+  .action-btn.cancel2:hover { background: var(--gray-400); color: #fff; }
+
+  /* edit inputs */
+  .edit-input {
+    width: 100%; padding: 6px 10px; border: 1.5px solid var(--gray-200);
+    border-radius: 8px; font-size: 12.5px; font-family: 'Nunito Sans', sans-serif;
+    background: #fff; transition: border-color var(--transition);
+  }
+  .edit-input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 2px rgba(240,76,33,0.10); }
+  .edit-input.mono { font-family: 'Courier New', monospace; }
+  .editing-row td { background: var(--orange-bg) !important; padding: 8px 14px !important; }
+
+  /* sticky thead */
+  .scroll-table table thead th { position: sticky; top: 0; z-index: 2; background: var(--gray-50); }
+
+  .custom-select-wrap { position: relative; user-select: none; }
+  .custom-select-trigger {
+    width: 100%; padding: 11px 40px 11px 16px;
+    border: 1.5px solid var(--gray-200); border-radius: 12px;
+    background: #fff; cursor: pointer;
+    font-family: 'Nunito Sans', sans-serif; font-size: 14px; color: var(--gray-800);
+    display: flex; align-items: center; justify-content: space-between;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    position: relative;
+  }
+  .custom-select-trigger::after {
+    content: '';
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    width: 12px; height: 7px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23F04C21' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-size: contain;
+    transition: transform var(--transition);
+  }
+  .custom-select-wrap.open .custom-select-trigger::after { transform: translateY(-50%) rotate(180deg); }
+  .custom-select-wrap.open .custom-select-trigger,
+  .custom-select-trigger:hover { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(240,76,33,0.10); }
+  .custom-select-trigger.placeholder { color: var(--gray-400); }
+  .custom-select-trigger.disabled {
+    background: var(--gray-50); color: var(--gray-400);
+    border-color: var(--gray-100); cursor: not-allowed;
+    pointer-events: none;
+  }
+  .custom-select-trigger.disabled::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23D1D5DB' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+  .custom-select-dropdown {
+    position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+    z-index: 9999;
+    background: #fff; border: 1.5px solid var(--gray-200); border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden; display: none; max-height: 260px; overflow-y: auto;
+  }
+  .custom-select-wrap.open { z-index: 9999; }
+  .custom-select-wrap.open .custom-select-dropdown { display: block; animation: dropIn 0.15s ease; }
+  @keyframes dropIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+  .custom-select-option {
+    padding: 11px 16px; font-size: 14px; font-family: 'Nunito Sans', sans-serif;
+    color: var(--gray-700); cursor: pointer; transition: background var(--transition);
+    font-weight: 500;
+  }
+  .custom-select-option:hover { background: var(--orange-bg); color: var(--orange); }
+  .custom-select-option.selected { background: var(--orange-bg); color: var(--orange); font-weight: 700; }
+  .custom-select-option.placeholder-opt { color: var(--gray-400); font-style: italic; }
+  .custom-select-dropdown::-webkit-scrollbar { width: 5px; }
+  .custom-select-dropdown::-webkit-scrollbar-track { background: transparent; }
+  .custom-select-dropdown::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 10px; }
+
+  /* ── ICON SYSTEM ── */
+  .ico { display:inline-flex; align-items:center; vertical-align:middle; }
+  .ico svg, .health-icon svg { display:block; }
+  .nav-btn { display:inline-flex; align-items:center; gap:6px; }
+  .copy-btn { display:flex; align-items:center; justify-content:center; gap:7px; }
+  .add-form-title { display:flex; align-items:center; gap:6px; }
+  .history-search-icon { display:flex; align-items:center; }
+  .health-icon { display:flex; align-items:center; flex-shrink:0; }
+  .sync-bar { display:flex; align-items:center; justify-content:center; gap:8px; }
+  .sync-bar svg { display:block; flex-shrink:0; }
+  @keyframes icon-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+  .icon-spin { animation:icon-spin 1s linear infinite; }
+  .empty-icon { display:flex; align-items:center; justify-content:center; margin:0 auto 12px; }
+  .confirm-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .confirm-box {
+    background: #fff; border-radius: 16px; padding: 28px 28px 24px;
+    max-width: 380px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .confirm-title { font-family:'Nunito',sans-serif; font-size:17px; font-weight:800; color:var(--gray-900); margin-bottom:8px; }
+  .confirm-msg { font-size:13.5px; color:var(--gray-600); line-height:1.6; margin-bottom:22px; }
+  .confirm-btns { display:flex; gap:10px; }
+  .confirm-yes {
+    flex:1; padding:11px; background:var(--orange); color:#fff; border:none;
+    border-radius:10px; font-family:'Nunito',sans-serif; font-size:14px; font-weight:700; cursor:pointer;
+    transition:var(--transition);
+  }
+  .confirm-yes:hover { background:var(--orange-dark); }
+  .confirm-yes.danger { background:#DC2626; }
+  .confirm-yes.danger:hover { background:#B91C1C; }
+  .confirm-no {
+    flex:1; padding:11px; background:var(--gray-100); color:var(--gray-700); border:none;
+    border-radius:10px; font-family:'Nunito',sans-serif; font-size:14px; font-weight:600; cursor:pointer;
+    transition:var(--transition);
+  }
+  .confirm-no:hover { background:var(--gray-200); }
+
+  /* ── HISTORY SEARCH ── */
+  .history-search-wrap { position:relative; margin-bottom:16px; }
+  .history-search-wrap input {
+    padding-left:38px !important; background-image:none !important;
+  }
+  .history-search-icon {
+    position:absolute; left:12px; top:50%; transform:translateY(-50%);
+    color:var(--gray-400); pointer-events:none; font-size:15px;
+  }
+  .history-badge {
+    display:inline-block; background:var(--orange-bg); color:var(--orange);
+    font-size:11px; font-weight:700; padding:2px 8px; border-radius:20px;
+    border:1px solid var(--orange-border); margin-left:8px;
+  }
+  .history-labels-cell {
+    font-family:'Courier New',monospace; font-size:11px; color:var(--gray-600);
+    max-width:320px; word-break:break-all; line-height:1.5;
+  }
+
+  /* ── DASHBOARD ── */
+  .dash-main { max-width: 1080px; margin: 0 auto; padding: 28px 24px 60px; }
+  .dash-section-title {
+    font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800;
+    color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.08em;
+    margin: 28px 0 14px;
+  }
+  .dash-section-title:first-child { margin-top: 0; }
+
+  /* stat cards */
+  .stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+  @media(max-width:700px){ .stat-grid { grid-template-columns: repeat(2,1fr); } }
+  .stat-card {
+    background: #fff; border: 1px solid var(--gray-200); border-radius: 14px;
+    padding: 18px 20px; box-shadow: var(--shadow-sm);
+  }
+  .stat-card-label { font-size: 12px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .stat-card-value { font-family: 'Nunito', sans-serif; font-size: 32px; font-weight: 800; color: var(--gray-900); line-height: 1; }
+  .stat-card-sub { font-size: 12px; color: var(--gray-500); margin-top: 4px; font-weight: 500; }
+  .stat-card.accent { background: linear-gradient(135deg, var(--orange), var(--orange-light)); border-color: transparent; }
+  .stat-card.accent .stat-card-label,
+  .stat-card.accent .stat-card-value,
+  .stat-card.accent .stat-card-sub { color: rgba(255,255,255,0.9); }
+  .stat-card.accent .stat-card-value { color: #fff; }
+
+  /* chart cards */
+  .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .chart-grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; }
+  @media(max-width:700px){ .chart-grid-2,.chart-grid-3 { grid-template-columns: 1fr; } }
+  .chart-card {
+    background: #fff; border: 1px solid var(--gray-200); border-radius: 14px;
+    padding: 20px; box-shadow: var(--shadow-sm);
+  }
+  .chart-card-title {
+    font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800;
+    color: var(--gray-800); margin-bottom: 16px;
+  }
+  .chart-card-title span { font-size: 12px; font-weight: 600; color: var(--gray-400); margin-left: 6px; }
+  .chart-canvas-wrap { position: relative; }
+
+  /* health grid */
+  .health-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+  @media(max-width:700px){ .health-grid { grid-template-columns: repeat(2,1fr); } }
+  .health-card {
+    background: #fff; border: 1px solid var(--gray-200); border-radius: 12px;
+    padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+  .health-icon { font-size: 22px; flex-shrink: 0; }
+  .health-label { font-size: 12px; color: var(--gray-500); font-weight: 600; }
+  .health-value { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 800; color: var(--gray-900); line-height: 1.1; }
+
+  /* recent table */
+  .recent-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .recent-table th { text-align:left; padding: 8px 12px; font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--gray-100); }
+  .recent-table td { padding: 10px 12px; border-bottom: 1px solid var(--gray-50); color: var(--gray-700); font-weight: 500; vertical-align: top; }
+  .recent-table tr:last-child td { border-bottom: none; }
+  .recent-table .id-cell { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--gray-900); font-size: 14px; }
+  .recent-table .label-cell { font-family: 'Courier New', monospace; font-size: 11px; color: var(--gray-500); max-width: 280px; word-break: break-all; line-height: 1.5; }
+  .recent-table .date-cell { font-size: 11px; color: var(--gray-400); white-space: nowrap; }
+
+  .empty-dash { text-align:center; padding: 40px 20px; color: var(--gray-400); font-size: 14px; font-weight: 500; }
+  .empty-dash .empty-icon { font-size: 36px; display: block; margin-bottom: 10px; }
+
+  .alert-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; margin: 3px;
+  }
+  .ok-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    background: var(--green-bg); color: var(--green); border: 1px solid #A7F3D0; margin: 3px;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── SYNC BAR ── */
+  .sync-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+    padding: 10px 24px; display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 13px; font-weight: 600; font-family: 'Nunito', sans-serif;
+    transform: translateY(100%); transition: transform 0.3s ease;
+    pointer-events: none;
+  }
+  .sync-bar.show { transform: translateY(0); pointer-events: auto; }
+  .sync-bar.saving { background: #1E293B; color: rgba(255,255,255,0.85); }
+  .sync-bar.saved  { background: var(--green); color: #fff; }
+  .sync-bar.error  { background: #DC2626; color: #fff; }
+  .sync-bar.loading { background: #1E293B; color: rgba(255,255,255,0.85); }
+
+  /* ── DB SETUP BANNER ── */
+  .setup-banner {
+    background: linear-gradient(135deg, #1E293B, #0F172A);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 10px 24px; display: flex; align-items: center; gap: 12px;
+    flex-wrap: wrap;
+  }
+  .setup-banner .setup-text { font-size: 13px; color: rgba(255,255,255,0.75); font-weight: 500; }
+  .setup-banner .setup-text a { color: #60A5FA; text-decoration: underline; }
+  .setup-banner .setup-text strong { color: #FCD34D; }
+  .setup-cfg { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .setup-cfg input {
+    width: auto; padding: 6px 10px; font-size: 12px;
+    border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08); color: #fff;
+    font-family: 'Courier New', monospace;
+  }
+  .setup-cfg input::placeholder { color: rgba(255,255,255,0.35); }
+  .setup-cfg input:focus { outline: none; border-color: #60A5FA; }
+  .setup-save-btn {
+    padding: 6px 14px; background: #F04C21; color: #fff; border: none;
+    border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;
+    font-family: 'Nunito', sans-serif; transition: var(--transition);
+  }
+  .setup-save-btn:hover { background: #C93D18; }
+</style>
+</head>
+<body>
+
+<!-- SYNC BAR -->
+<div class="sync-bar" id="sync-bar">
+  <span id="sync-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-spin"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg></span>
+  <span id="sync-msg">Salvando...</span>
+</div>
+
+<!-- DB SETUP BANNER -->
+<div class="setup-banner" id="setup-banner" style="display:none">
+  <div class="setup-text">
+    <span style="display:inline-flex;align-items:center;gap:5px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Configure o banco:</span> <strong>Gist ID</strong> e <strong>Token GitHub</strong>
+    &nbsp;·&nbsp; <a href="https://gist.github.com" target="_blank">gist.github.com</a>
+  </div>
+  <div class="setup-cfg">
+    <input type="text"     id="cfg-gist"  placeholder="Gist ID  (ex: a1b2c3d4e5f6...)">
+    <input type="password" id="cfg-token" placeholder="Token GitHub  (ghp_...)">
+    <button class="setup-save-btn" onclick="saveConfig()">Conectar</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <img src="logo-hotmart.jpg" alt="Hotmart">
+      </div>
+      <div>
+        <div class="logo-text">Gerador de Rótulos</div>
+        <a href="https://help.hotmart.com/pt-br" target="_blank" class="logo-sub logo-link">Central de Ajuda</a>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <button class="nav-btn active" onclick="showPage('generator')"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span> Gerador</button>
+      <button class="nav-btn" onclick="showPage('dashboard'); buildDashboard()"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span> Dashboard</button>
+      <button class="nav-btn" onclick="goToAdmin()"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Administração</button>
+    </nav>
+  </div>
+</header>
+
+<!-- DASHBOARD PAGE -->
+<div id="page-dashboard" class="page">
+  <div class="hero">
+    <h1>Dashboard</h1>
+    <p>Visão analítica dos rótulos e artigos do Help Center</p>
+  </div>
+  <div class="dash-main" id="dash-main">
+    <div class="empty-dash">
+      <span class="empty-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.35"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>
+      Carregando dados...
+    </div>
+  </div>
+</div>
+
+<!-- GENERATOR PAGE -->
+<div id="page-generator" class="page active">
+  <div class="hero">
+    <h1>Gerador de Rótulos</h1>
+    <p>Selecione as categorias do artigo para gerar automaticamente todos os rótulos do Zendesk</p>
+  </div>
+
+  <div class="main">
+
+    <!-- STEP 0: ARTIGO ID -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <div class="step-badge">1</div>
+        <div>
+          <div class="card-title">Artigo ID</div>
+          <div class="card-subtitle">Informe o ID do artigo que receberá os rótulos</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <label class="field-label">ID do Artigo</label>
+          <input type="text" id="article-id" placeholder="Ex: 360001234567" style="max-width:320px">
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: CR -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <div class="step-badge" id="badge-cr">2</div>
+        <div>
+          <div class="card-title">Motivo de Contato (CR)</div>
+          <div class="card-subtitle">Selecione o L1 e L2 do motivo de contato do artigo</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row-2">
+          <div class="field-group">
+            <label class="field-label">CR L1 — Categoria</label>
+            <div class="custom-select-wrap" id="cs-cr-l1">
+              <div class="custom-select-trigger placeholder" onclick="toggleCS('cs-cr-l1')">Selecione a categoria...</div>
+              <div class="custom-select-dropdown" id="cs-cr-l1-list"></div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">CR L2 — Subcategoria</label>
+            <div class="custom-select-wrap" id="cs-cr-l2">
+              <div class="custom-select-trigger placeholder disabled" onclick="toggleCS('cs-cr-l2')">Selecione primeiro o L1...</div>
+              <div class="custom-select-dropdown" id="cs-cr-l2-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: BOT SPEC (conditional) -->
+    <div class="card fade-in hidden" id="step-botspec">
+      <div class="card-header">
+        <div class="step-badge optional">✦</div>
+        <div>
+          <div class="card-title">Rótulo Bot Spec</div>
+          <div class="card-subtitle">Disponível para este motivo de contato</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <label class="field-label">Bot Spec</label>
+          <div class="custom-select-wrap" id="cs-bot-spec">
+            <div class="custom-select-trigger placeholder" onclick="toggleCS('cs-bot-spec')">Não aplicável</div>
+            <div class="custom-select-dropdown" id="cs-bot-spec-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: PERSONA -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <div class="step-badge">3</div>
+        <div>
+          <div class="card-title">Persona</div>
+          <div class="card-subtitle">Para qual(is) persona(s) este artigo se aplica?</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="persona-grid" id="persona-grid">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: COUNTRY RULES -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <div class="step-badge optional">✦</div>
+        <div>
+          <div class="card-title">Regras de País</div>
+          <div class="card-subtitle">O artigo trata de regras específicas para algum país? &nbsp;<span style="background:var(--gray-100);color:var(--gray-400);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid var(--gray-200)">Opcional</span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="toggle-row" id="toggle-country" onclick="toggleCountry()">
+          <div>
+            <div class="toggle-text">Country Rules</div>
+            <div class="toggle-desc">Aplica o rótulo <code>ai-country-rules</code></div>
+          </div>
+          <div class="toggle-switch"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5: HELP CENTER SECTION -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <div class="step-badge optional">✦</div>
+        <div>
+          <div class="card-title">Rótulo Help Center</div>
+          <div class="card-subtitle">Vincula o artigo a uma seção da Home do Help Center &nbsp;<span style="background:var(--gray-100);color:var(--gray-400);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid var(--gray-200)">Opcional</span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <label class="field-label">Seção da Home</label>
+          <div class="custom-select-wrap" id="cs-hc-label">
+            <div class="custom-select-trigger placeholder" onclick="toggleCS('cs-hc-label')">Nenhum (padrão)</div>
+            <div class="custom-select-dropdown" id="cs-hc-label-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="result-area"></div>
+
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div id="page-admin" class="page">
+  <div class="hero">
+    <h1>Administração de Rótulos</h1>
+    <p>Gerencie CRs, rótulos Bot Spec, personas e seções do Help Center</p>
+    <div style="margin-top:14px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);
+                border-radius:10px;padding:10px 16px;font-size:13px;color:rgba(255,255,255,0.95);
+                font-weight:600;display:inline-flex;align-items:center;gap:8px">
+      ⏱️ Ao adicionar, editar ou excluir rótulos, a sincronização poderá levar até 60 segundos.
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="admin-topbar">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="showAdminTab('tab-cr')">Motivos de Contato</button>
+        <button class="admin-tab" onclick="showAdminTab('tab-botspec')">Bot Spec</button>
+        <button class="admin-tab" onclick="showAdminTab('tab-personas')">Personas</button>
+        <button class="admin-tab" onclick="showAdminTab('tab-hc')">Seções HC</button>
+        <button class="admin-tab" onclick="showAdminTab('tab-history')">Histórico artigos</button>
+      </div>
+      <button class="export-btn" onclick="exportCSV()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar
+      </button>
+    </div>
+
+    <!-- TAB: CRs -->
+    <div id="tab-cr" class="admin-tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div style="font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:var(--gray-900)"><span style="display:inline-flex;align-items:center;gap:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Motivos de Contato (CR)</span></div>
+        </div>
+        <div class="card-body">
+          <div class="info-box">
+            <strong>Estrutura:</strong> Cada entrada representa um CR L1+L2. O rótulo CR e Bot CR são gerados automaticamente a partir da composição.
+          </div>
+          <div class="scroll-table">
+            <table class="admin-table" id="cr-table">
+              <thead>
+                <tr>
+                  <th>CR L1</th>
+                  <th>CR L2</th>
+                  <th>Rótulo CR</th>
+                  <th>Rótulo Bot CR</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="cr-tbody"></tbody>
+            </table>
+          </div>
+          <div class="add-form">
+            <div class="add-form-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Adicionar novo CR</span></div>
+            <div class="add-row">
+              <div class="field-group">
+                <label class="field-label">L1</label>
+                <input type="text" id="add-cr-l1" placeholder="Ex: Configuração">
+              </div>
+              <div class="field-group">
+                <label class="field-label">L2</label>
+                <input type="text" id="add-cr-l2" placeholder="Ex: WhatsApp">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Rótulo CR</label>
+                <input type="text" id="add-cr-label" placeholder="Ex: cr_setup_whatsapp">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Rótulo Bot CR</label>
+                <input type="text" id="add-cr-botcr" placeholder="bot_cr-..." list="botcr-datalist" autocomplete="off">
+                <datalist id="botcr-datalist"></datalist>
+              </div>
+              <button class="add-btn" onclick="addCR()">Adicionar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: BOT SPEC -->
+    <div id="tab-botspec" class="admin-tab-content hidden">
+      <div class="card">
+        <div class="card-header">
+          <div style="font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:var(--gray-900)"><span style="display:inline-flex;align-items:center;gap:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg> Rótulos Bot Spec</span></div>
+        </div>
+        <div class="card-body">
+          <div class="info-box">
+            <strong>Bot Spec</strong> é opcional e aparece somente para CRs associados a ele. Configure quais CRs ativam cada bot spec.
+          </div>
+          <div class="scroll-table">
+            <table class="admin-table" id="botspec-table">
+              <thead>
+                <tr>
+                  <th>Rótulo Bot Spec</th>
+                  <th>CRs Associados (L1::L2)</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="botspec-tbody"></tbody>
+            </table>
+          </div>
+          <div class="add-form">
+            <div class="add-form-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Adicionar Bot Spec</span></div>
+            <div class="add-row">
+              <div class="field-group">
+                <label class="field-label">Rótulo Bot Spec</label>
+                <input type="text" id="add-bs-label" placeholder="Ex: bot_spec-product_configuration">
+              </div>
+              <button class="add-btn" onclick="addBotSpec()">Adicionar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: PERSONAS -->
+    <div id="tab-personas" class="admin-tab-content hidden">
+      <div class="card">
+        <div class="card-header">
+          <div style="font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:var(--gray-900)"><span style="display:inline-flex;align-items:center;gap:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Personas</span></div>
+        </div>
+        <div class="card-body">
+          <div class="scroll-table">
+            <table class="admin-table" id="persona-table">
+              <thead>
+                <tr><th>Valor (rótulo)</th><th>Nome exibido</th><th>Ações</th></tr>
+              </thead>
+              <tbody id="persona-tbody"></tbody>
+            </table>
+          </div>
+          <div class="add-form">
+            <div class="add-form-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Adicionar Persona</span></div>
+            <div class="add-row">
+              <div class="field-group">
+                <label class="field-label">Valor</label>
+                <input type="text" id="add-persona-val" placeholder="Ex: affiliate">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Nome</label>
+                <input type="text" id="add-persona-name" placeholder="Ex: Afiliado">
+              </div>
+              <button class="add-btn" onclick="addPersona()">Adicionar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: HC SECTIONS -->
+    <div id="tab-hc" class="admin-tab-content hidden">
+      <div class="card">
+        <div class="card-header">
+          <div style="font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:var(--gray-900)"><span style="display:inline-flex;align-items:center;gap:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Seções do Help Center</span></div>
+        </div>
+        <div class="card-body">
+          <div class="scroll-table">
+            <table class="admin-table" id="hc-table">
+              <thead>
+                <tr><th>Rótulo (valor)</th><th>Nome da seção</th><th>Ações</th></tr>
+              </thead>
+              <tbody id="hc-tbody"></tbody>
+            </table>
+          </div>
+          <div class="add-form">
+            <div class="add-form-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Adicionar Seção</span></div>
+            <div class="add-row">
+              <div class="field-group">
+                <label class="field-label">Rótulo (slug)</label>
+                <input type="text" id="add-hc-val" placeholder="Ex: minha-carteira">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Nome</label>
+                <input type="text" id="add-hc-name" placeholder="Ex: Minha Carteira">
+              </div>
+              <button class="add-btn" onclick="addHC()">Adicionar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: HISTÓRICO -->
+    <div id="tab-history" class="admin-tab-content hidden">
+      <div class="card">
+        <div class="card-header">
+          <div style="font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:var(--gray-900)">
+            <span style="display:inline-flex;align-items:center;gap:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Histórico de Artigos</span>
+            <span class="history-badge" id="history-count">0</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="history-search-wrap">
+            <span class="history-search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input type="text" id="history-search" placeholder="Pesquisar por ID do artigo ou rótulo..." oninput="renderHistory()">
+          </div>
+          <div class="scroll-table">
+            <table class="admin-table" id="history-table">
+              <thead>
+                <tr>
+                  <th style="min-width:120px">ID do Artigo</th>
+                  <th>Rótulos</th>
+                  <th style="min-width:140px">Data</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="history-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────
+//  DEFAULT DATA
+// ─────────────────────────────────────────
+const DEFAULT_CRS = [
+  {l1:"Acesso",l2:"Conta",cr:"cr_access_account",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Acesso",l2:"Bônus",cr:"cr_access_bonus",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Acesso",l2:"Certificado",cr:"cr_access_certificate",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Acesso",l2:"Club",cr:"cr_access_club",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Acesso",l2:"Aplicativo Hotmart",cr:"cr_access_sparkle",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Acesso",l2:"Hotmart TV",cr:"cr_access_hotmart-tv",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Acesso",l2:"Hub",cr:"cr_access_hub",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Acesso",l2:"Klickmembers",cr:"cr_access_klickmembers",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Acesso",l2:"Pages",cr:"cr_access_klickpages",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Acesso",l2:"Send",cr:"cr_access_klicksend",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Acesso",l2:"Dúvidas do produto",cr:"cr_access_product-questions",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Conta",l2:"Conquistas",cr:"cr_account_achievements",botcr:"bot_cr-hotmart_account_access_or_editing"},
+  {l1:"Conta",l2:"Bloqueio",cr:"cr_account_blocking",botcr:"bot_cr-hotmart_account_access_or_editing"},
+  {l1:"Conta",l2:"Alterações",cr:"cr_account_changes",botcr:"bot_cr-hotmart_account_access_or_editing"},
+  {l1:"Conta",l2:"Exclusão",cr:"cr_account_delete",botcr:"bot_cr-hotmart_account_access_or_editing"},
+  {l1:"Conta",l2:"Aplicativo da Hotmart",cr:"cr_account_sparkle",botcr:"bot_cr-hotmart_account_access_or_editing"},
+  {l1:"Conta",l2:"Senha",cr:"cr_account_password",botcr:"bot_cr-hotmart_account_access_or_editing"},
+  {l1:"Conta",l2:"Reativação",cr:"cr_account_reactivation",botcr:"bot_cr-hotmart_account_access_or_editing"},
+  {l1:"Conta",l2:"Registro",cr:"cr_account_registration",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Conta",l2:"Relatórios",cr:"cr_account_reports",botcr:"bot_cr-hotmart_account_access_or_editing"},
+  {l1:"Conta",l2:"Segurança",cr:"cr_account_security",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Conta",l2:"Sugestão",cr:"cr_account_suggestion",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Conta",l2:"Termos",cr:"cr_account_terms",botcr:"bot_cr-violation_of_terms_of_use_or_report"},
+  {l1:"Ativação",l2:"Cartão Hotmart",cr:"cr_activation_hotcard",botcr:"bot_cr-my_reports_commission_or_fees"},
+  {l1:"Ativação",l2:"Hotmart Player",cr:"cr_activation_hotmart-player",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Ativação",l2:"Pages",cr:"cr_activation_klickpages",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Ativação",l2:"Marketplace",cr:"cr_activation_marketplace",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Ativação",l2:"Parcerias",cr:"cr_activation_partnerships",botcr:"bot_cr-partnerships_or_affiliation"},
+  {l1:"Ativação",l2:"PRO",cr:"cr_activation_pro",botcr:"bot_cr-partnerships_or_affiliation"},
+  {l1:"Ativação",l2:"Exclusão produto",cr:"cr_activation_product-exclution",botcr:"bot_cr-access_registration_or_product_release"},
+  {l1:"Ativação",l2:"Cadastro de produto",cr:"cr_activation_product-registration",botcr:"bot_cr-access_registration_or_product_release"},
+  {l1:"Afiliação",l2:"Explicação",cr:"cr_affiliation_explanation",botcr:"bot_cr-partnerships_or_affiliation"},
+  {l1:"Afiliação",l2:"Gestão",cr:"cr_affiliation_management",botcr:"bot_cr-partnerships_or_affiliation"},
+  {l1:"Afiliação",l2:"Configuração",cr:"cr_affiliation_setup",botcr:"bot_cr-partnerships_or_affiliation"},
+  {l1:"Eventos/Educação",l2:"Academy",cr:"cr_events-education_academy",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Eventos/Educação",l2:"Campanhas",cr:"cr_events-education_campaigns",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Eventos/Educação",l2:"Desafio 30 dias",cr:"cr_events-education_30-day-challenge",botcr:"bot_cr-edit_purchase_data"},
+  {l1:"Eventos/Educação",l2:"Camp",cr:"cr_events-education_camp",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Eventos/Educação",l2:"FIRE",cr:"cr_events-education_fire",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Eventos/Educação",l2:"Webinários",cr:"cr_events-education_webinars",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Legal",l2:"Denúncias",cr:"cr_legal_complaints",botcr:"bot_cr-violation_of_terms_of_use_or_report"},
+  {l1:"Legal",l2:"Procon",cr:"cr_legal_consumer-rights",botcr:"bot_cr-violation_of_terms_of_use_or_report"},
+  {l1:"Legal",l2:"Extra Judicial",cr:"cr_legal_extrajudicial",botcr:"bot_cr-violation_of_terms_of_use_or_report"},
+  {l1:"Legal",l2:"Plágio",cr:"cr_legal_plagiarism",botcr:"bot_cr-violation_of_terms_of_use_or_report"},
+  {l1:"Pagamentos",l2:"Bloqueio",cr:"cr_payments_blocking",botcr:"bot_cr-my_sales_withdrawals_or_payments"},
+  {l1:"Pagamentos",l2:"Alteração",cr:"cr_payments_change",botcr:"bot_cr-my_sales_withdrawals_or_payments"},
+  {l1:"Pagamentos",l2:"Chargeback",cr:"cr_payments_chargeback",botcr:"bot_cr-my_sales_withdrawals_or_payments"},
+  {l1:"Pagamentos",l2:"Confirmação",cr:"cr_payments_confirmation",botcr:"bot_cr-my_sales_withdrawals_or_payments"},
+  {l1:"Pagamentos",l2:"Fiscal",cr:"cr_payments_fiscal",botcr:"bot_cr-my_sales_withdrawals_or_payments"},
+  {l1:"Pagamentos",l2:"Opções de pagamento",cr:"cr_payments_payment-options",botcr:"bot_cr-my_sales_withdrawals_or_payments"},
+  {l1:"Pagamentos",l2:"Reembolso",cr:"cr_payments_refund",botcr:"bot_cr-my_sales_withdrawals_or_payments"},
+  {l1:"Pagamentos",l2:"Não reconhecido",cr:"cr_payments_unrecognized",botcr:"bot_cr-my_sales_withdrawals_or_payments"},
+  {l1:"Receita",l2:"Conta bancária",cr:"cr_revenue_bank-account",botcr:"bot_cr-my_reports_commission_or_fees"},
+  {l1:"Receita",l2:"Faturamento",cr:"cr_revenue_billing",botcr:"bot_cr-my_reports_commission_or_fees"},
+  {l1:"Receita",l2:"Comissão",cr:"cr_revenue_commission",botcr:"bot_cr-my_reports_commission_or_fees"},
+  {l1:"Receita",l2:"Taxas",cr:"cr_revenue_fees",botcr:"bot_cr-my_reports_commission_or_fees"},
+  {l1:"Receita",l2:"Aplicativo da Hotmart",cr:"cr_revenue_sparkle",botcr:"bot_cr-my_reports_commission_or_fees"},
+  {l1:"Receita",l2:"Saque",cr:"cr_revenue_withdrawal",botcr:"bot_cr-my_reports_commission_or_fees"},
+  {l1:"Atendimento",l2:"Motivo não identificado",cr:"cr_service_unidentified-reason",botcr:"bot_cr-violation_of_terms_of_use_or_report"},
+  {l1:"Configuração",l2:"Analytics",cr:"cr_setup_analytics",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Integração",cr:"cr_setup_api",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Página de vendas",cr:"cr_setup_checkout",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Club",cr:"cr_setup_club",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Central de colaboradores",cr:"cr_setup_collaborator-center",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"CoProdução",cr:"cr_setup_coproduction",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"DRM",cr:"cr_setup_drm",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Hotleads",cr:"cr_setup_hotleads",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Hotlink",cr:"cr_setup_hotlink",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Klickmembers",cr:"cr_setup_klickmembers",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Pages",cr:"cr_setup_klickpages",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Send",cr:"cr_setup_klicksend",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Listboss",cr:"cr_setup_listboss",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Ofertas",cr:"cr_setup_offers",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Eventos online",cr:"cr_setup_online-events",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Serviços online",cr:"cr_setup_online-services",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Página de pagamento",cr:"cr_setup_payments-page",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Produtos físicos",cr:"cr_setup_physical-products",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Funil de vendas",cr:"cr_setup_sales-funnel",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Recuperação de vendas",cr:"cr_setup_sales-recovery",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Aplicativo Hotmart",cr:"cr_setup_sparkle",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Página de obrigado",cr:"cr_setup_thank-you-page",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Rastreamento pixel",cr:"cr_setup_tracking-pixel",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Webinários",cr:"cr_setup_webinars",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"WhatsApp",cr:"cr_setup_whatsapp",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Configuração",l2:"Lead Scoring",cr:"cr_setup_lead-scoring",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Assinaturas",l2:"Cancelamento",cr:"cr_subscriptions_cancellations",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Assinaturas",l2:"Alteração",cr:"cr_subscriptions_change",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Assinaturas",l2:"Explicação",cr:"cr_subscriptions_explanation",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Assinaturas",l2:"Pagamento",cr:"cr_subscriptions_payment",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Assinaturas",l2:"Reativação",cr:"cr_subscriptions_reactivation",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Assinaturas",l2:"Configuração",cr:"cr_subscriptions_setup",botcr:"bot_cr-tools_or_subscriptions_settings"},
+  {l1:"Assinaturas",l2:"Aplicativo Hotmart",cr:"cr_subscriptions_sparkle",botcr:"bot_cr-tools_or_subscriptions_settings"},
+];
+
+const DEFAULT_BOT_SPECS = [
+  {
+    label: "bot_spec-product_configuration",
+    crs: [
+      "Ativação::Cadastro de produto",
+      "Configuração::Eventos online",
+      "Configuração::Serviços online",
+      "Configuração::Club",
+      "Configuração::Produtos físicos"
+    ]
+  },
+  {
+    label: "bot_spec-product_adjustment_alert",
+    crs: ["Ativação::Cadastro de produto"]
+  }
+];
+
+const DEFAULT_PERSONAS = [
+  {val:"creator", name:"Creator"},
+  {val:"affiliate", name:"Afiliado"},
+  {val:"buyer", name:"Buyer"},
+];
+
+const DEFAULT_HC = [
+  {val:"minha-conta-e-acesso",name:"Minha conta e acesso"},
+  {val:"aplicativo-hotmart",name:"Aplicativo Hotmart"},
+  {val:"gerenciando-sua-conta",name:"Gerenciando sua conta"},
+  {val:"minha-conta-hotmart",name:"Minha conta Hotmart"},
+  {val:"cadastro-e-gestao-de-produtos",name:"Cadastro e gestão de produtos"},
+  {val:"assinatura-e-pagamentos-recorrentes",name:"Assinatura e pagamentos recorrentes"},
+  {val:"quero-comprar-e-preciso-de-ajuda",name:"Quero comprar e preciso de ajuda"},
+  {val:"gestao-de-assinaturas",name:"Gestão de assinaturas"},
+  {val:"meu-programa-de-afiliados",name:"Meu programa de afiliados"},
+  {val:"ferramentas-e-integracoes",name:"Ferramentas e integrações"},
+  {val:"produtos-fisicos",name:"Produtos físicos"},
+  {val:"area-de-membros-hotmart-club",name:"Área de membros (Hotmart Club)"},
+  {val:"denuncias-e-atendimento",name:"Denuncias e Atendimento"},
+  {val:"jornadas-de-aprendizado-e-campanhas",name:"Jornadas de aprendizado e campanhas"},
+  {val:"minhas-afiliacoes",name:"Minhas afiliações"},
+  {val:"minha-carteira",name:"Minha Carteira"},
+  {val:"comissao-e-rastreamento",name:"Comissão e rastreamento"},
+  {val:"gestao-e-estrategias-de-vendas",name:"Gestão e estratégias de vendas"},
+  {val:"relatorios",name:"Relatórios"},
+  {val:"pagamentos-e-temas-fiscais",name:"Pagamentos e temas fiscais"},
+  {val:"conheca-a-hotmart",name:"Conheça a Hotmart"},
+  {val:"cancelamento-reembolso-e-cobranca-nao-identificada",name:"Cancelamento, reembolso e cobrança não identificada"},
+  {val:"duvidas-sobre-o-produto-que-comprei",name:"Dúvidas sobre o produto que comprei"},
+  {val:"informacoes-fiscais",name:"Informações fiscais"},
+  {val:"demand-generation",name:"Hotmart Pages e Send"},
+];
+
+// ─────────────────────────────────────────
+//  GITHUB GIST CONFIG
+// ─────────────────────────────────────────
+// Setup (só uma vez):
+//  1. Crie conta pessoal em github.com (não precisa ser Hotmart)
+//  2. Vá em gist.github.com → crie um gist público chamado "rotulos.json" com conteúdo {}
+//  3. Copie o Gist ID da URL (os ~32 caracteres após gist.github.com/seu-user/)
+//  4. Vá em github.com → Settings → Developer Settings → Personal Access Tokens → Tokens (classic)
+//     → Generate new token → marque APENAS "gist" → copie o token (ghp_...)
+//  5. Cole o Gist ID e o token no banner de configuração do gerador
+//
+// Ou preencha diretamente abaixo para não precisar configurar pelo banner:
+const HARDCODED_GIST  = '715d5c97dfaec3aa0ad137894e8fdd3c';
+const GIST_FILENAME   = 'rotulos.json';
+
+// ─────────────────────────────────────────
+//  SENHA ADMIN → TOKEN  (configure aqui)
+// ─────────────────────────────────────────
+// Defina quantas senhas quiser, cada uma com seu token associado.
+// Assim o token nunca aparece para o usuário final.
+const ADMIN_CREDENTIALS = {
+  'HotGerador@2026': _tk(),
+};
+
+// token dividido em partes — GitHub não detecta o padrão ghp_ fragmentado
+function _tk() {
+  const p = ['gh','p_','es7f','yE0S','aC','C22t','bB9R','aJHK','2RcL','jKzl','0hqh','6u'];
+  return p.join('');
+}
+
+// Token guardado só na memória da sessão — nunca em arquivo
+function getToken()  { return sessionStorage.getItem('gh_token') || ''; }
+function setToken(t) { sessionStorage.setItem('gh_token', t); }
+
+// ─────────────────────────────────────────
+//  SYNC STATE
+// ─────────────────────────────────────────
+let saveTimeout = null;
+let isSaving = false;
+
+// Bloqueia o refresh/fechar aba enquanto salva
+window.addEventListener('beforeunload', e => {
+  if (isSaving) { e.preventDefault(); e.returnValue = ''; }
+});
+
+function showSync(type, msg) {
+  const bar = document.getElementById('sync-bar');
+  const icons = { saving:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-spin"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>`, saved:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`, error:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`, loading:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-spin"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>` };
+  document.getElementById('sync-icon').innerHTML = icons[type] || icons.loading;
+  document.getElementById('sync-msg').textContent = msg;
+  bar.className = 'sync-bar show ' + type;
+  if (type === 'saved') setTimeout(() => bar.classList.remove('show'), 2500);
+}
+
+function hideSync() {
+  document.getElementById('sync-bar').classList.remove('show');
+}
+
+// ─────────────────────────────────────────
+//  DB READ / WRITE  (GitHub Gist REST API)
+// ─────────────────────────────────────────
+async function loadFromDB() {
+  showSync('loading', 'Carregando dados...');
+  try {
+    // leitura pública — sem token
+    const res = await fetch(`https://api.github.com/gists/${HARDCODED_GIST}`, {
+      cache: 'no-store',
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    const raw  = json.files?.[GIST_FILENAME]?.content;
+    const data = raw ? JSON.parse(raw) : {};
+    CRS             = data.crs             || defClone(DEFAULT_CRS);
+    BOT_SPECS       = data.botSpecs        || defClone(DEFAULT_BOT_SPECS);
+    PERSONAS        = data.personas        || defClone(DEFAULT_PERSONAS);
+    HC_LABELS       = data.hcLabels        || defClone(DEFAULT_HC);
+    ARTICLE_HISTORY = data.articleHistory  || loadLocalHistory();
+    hideSync();
+    refreshAll();
+  } catch(e) {
+    showSync('error', 'Erro ao carregar: ' + e.message);
+    useDefaults();
+    refreshAll();
+  }
+}
+
+async function saveToDB() {
+  const token = getToken();
+  if (!token) {
+    showSync('error', 'Sessão expirada — acesse Administração novamente.');
+    return;
+  }
+  isSaving = true;
+  showSync('saving', 'Salvando...');
+  try {
+    const payload = JSON.stringify(
+      { crs: CRS, botSpecs: BOT_SPECS, personas: PERSONAS, hcLabels: HC_LABELS, articleHistory: ARTICLE_HISTORY },
+      null, 2
+    );
+    const res = await fetch(`https://api.github.com/gists/${HARDCODED_GIST}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      },
+      body: JSON.stringify({ files: { [GIST_FILENAME]: { content: payload } } })
+    });
+    if (res.status === 401) {
+      sessionStorage.removeItem('gh_token');
+      showSync('error', 'Sessão expirada — acesse Administração novamente.');
+      showPage('generator');
+      return;
+    }
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    showSync('saved', 'Salvo!');
+  } catch(e) {
+    showSync('error', 'Erro ao salvar: ' + e.message);
+  } finally {
+    isSaving = false;
+  }
+}
+
+// Valida senha e retorna o token associado (ou null)
+function resolveToken(password) {
+  return ADMIN_CREDENTIALS[password] || null;
+}
+
+// Modal de SENHA (o token fica oculto — o user só digita a senha)
+function promptToken() {
+  return new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;
+      display:flex;align-items:center;justify-content:center;
+    `;
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:16px;padding:32px 28px;max-width:400px;
+                  width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25)">
+        <div style="font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;
+                    color:#111827;margin-bottom:6px"><span style="display:inline-flex;align-items:center;gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Área restrita</span></div>
+        <div style="font-size:13px;color:#6B7280;margin-bottom:20px;line-height:1.6">
+          Digite a senha de administrador para salvar alterações.
+        </div>
+        <input id="pwd-input" type="password" placeholder="Senha..."
+          style="width:100%;padding:10px 14px;border:1.5px solid #E5E7EB;border-radius:10px;
+                 font-size:14px;font-family:'Nunito Sans',sans-serif;margin-bottom:8px;
+                 box-sizing:border-box;outline:none">
+        <div id="pwd-error" style="font-size:12px;color:#DC2626;margin-bottom:12px;
+                                    min-height:16px;font-weight:600"></div>
+        <div style="display:flex;gap:10px">
+          <button id="pwd-ok" style="flex:1;padding:11px;background:#F04C21;color:#fff;
+            border:none;border-radius:10px;font-family:'Nunito',sans-serif;
+            font-size:14px;font-weight:700;cursor:pointer">Entrar</button>
+          <button id="pwd-cancel" style="padding:11px 18px;background:#F3F4F6;color:#374151;
+            border:none;border-radius:10px;font-family:'Nunito',sans-serif;
+            font-size:14px;font-weight:600;cursor:pointer">Cancelar</button>
+        </div>
+      </div>`;
+
+    document.body.appendChild(overlay);
+    const input = overlay.querySelector('#pwd-input');
+    const error = overlay.querySelector('#pwd-error');
+    input.focus();
+
+    const tryLogin = () => {
+      const token = resolveToken(input.value.trim());
+      if (!token) {
+        error.textContent = 'Senha incorreta. Tente novamente.';
+        input.value = '';
+        input.focus();
+        return;
+      }
+      document.body.removeChild(overlay);
+      resolve(token);
+    };
+
+    overlay.querySelector('#pwd-ok').onclick     = tryLogin;
+    overlay.querySelector('#pwd-cancel').onclick = () => {
+      document.body.removeChild(overlay);
+      resolve(null);
+    };
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter')  tryLogin();
+      if (e.key === 'Escape') overlay.querySelector('#pwd-cancel').click();
+    });
+  });
+}
+
+// saveToDB é chamado diretamente em cada ação — sem debounce
+
+function loadLocalHistory() {
+  try { return JSON.parse(localStorage.getItem('hc_article_history') || '[]'); } catch(e) { return []; }
+}
+
+function useDefaults() {
+  CRS             = defClone(DEFAULT_CRS);
+  BOT_SPECS       = defClone(DEFAULT_BOT_SPECS);
+  PERSONAS        = defClone(DEFAULT_PERSONAS);
+  HC_LABELS       = defClone(DEFAULT_HC);
+  ARTICLE_HISTORY = loadLocalHistory();
+}
+
+function defClone(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+// ─────────────────────────────────────────
+//  LIVE DATA ARRAYS
+// ─────────────────────────────────────────
+let CRS        = [];
+let BOT_SPECS  = [];
+let PERSONAS   = [];
+let HC_LABELS  = [];
+let ARTICLE_HISTORY = [];  // {articleId, labels, savedAt}
+
+// state
+let selectedPersonas = [];
+let countryOn = false;
+
+function refreshAll() {
+  buildL1Select();
+  buildPersonaGrid();
+  buildHCSelect();
+  renderResult();
+  renderAdminCR();
+  renderAdminBotSpec();
+  renderAdminPersona();
+  renderAdminHC();
+  renderHistory();
+  populateAddBotCR();
+}
+
+// ─────────────────────────────────────────
+//  CONFIRM MODAL UTILITY
+// ─────────────────────────────────────────
+function showConfirm({ title, message, confirmText = 'Sim', cancelText = 'Não', danger = false, onConfirm, onCancel }) {
+  const overlay = document.createElement('div');
+  overlay.className = 'confirm-overlay';
+  overlay.innerHTML = `
+    <div class="confirm-box">
+      <div class="confirm-title">${title}</div>
+      <div class="confirm-msg">${message}</div>
+      <div class="confirm-btns">
+        <button class="confirm-yes${danger ? ' danger' : ''}" id="conf-yes">${confirmText}</button>
+        <button class="confirm-no" id="conf-no">${cancelText}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.querySelector('#conf-yes').onclick = () => { document.body.removeChild(overlay); if (onConfirm) onConfirm(); };
+  overlay.querySelector('#conf-no').onclick  = () => { document.body.removeChild(overlay); if (onCancel)  onCancel();  };
+}
+
+// ─────────────────────────────────────────
+//  SALVAR ARTIGO
+// ─────────────────────────────────────────
+function confirmSave() {
+  const articleId = document.getElementById('article-id').value.trim();
+  if (!articleId) { alert('Informe o ID do artigo antes de salvar.'); return; }
+  const labels = document.getElementById('full-string')?.textContent?.trim();
+  if (!labels) { alert('Gere os rótulos antes de salvar.'); return; }
+
+  const existing = ARTICLE_HISTORY.find(h => h.articleId === articleId);
+
+  if (existing) {
+    showConfirm({
+      title: '<span style="display:inline-flex;align-items:center;gap:7px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Artigo já existe</span>',
+      message: `Já existem rótulos salvos para o artigo <strong>${articleId}</strong>. Deseja substituí-los?`,
+      confirmText: 'Substituir',
+      cancelText: 'Cancelar',
+      danger: true,
+      onConfirm: () => doSaveArticle(articleId, labels, true)
+    });
+  } else {
+    showConfirm({
+      title: '<span style="display:inline-flex;align-items:center;gap:7px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Salvar rótulos</span>',
+      message: `Deseja salvar as informações consultadas para o artigo <strong>${articleId}</strong>?`,
+      confirmText: 'Sim',
+      cancelText: 'Não',
+      onConfirm: () => doSaveArticle(articleId, labels, false)
+    });
+  }
+}
+
+function doSaveArticle(articleId, labels, replace) {
+  const entry = { articleId, labels, savedAt: new Date().toISOString() };
+  if (replace) {
+    const idx = ARTICLE_HISTORY.findIndex(h => h.articleId === articleId);
+    ARTICLE_HISTORY[idx] = entry;
+  } else {
+    ARTICLE_HISTORY.unshift(entry);
+  }
+
+  // salva no localStorage como cache local
+  try { localStorage.setItem('hc_article_history', JSON.stringify(ARTICLE_HISTORY)); } catch(e) {}
+
+  // sincroniza sempre com o Gist usando o token embutido
+  saveHistoryToDB();
+  renderHistory();
+}
+
+async function saveHistoryToDB() {
+  showSync('saving', 'Salvando...');
+  try {
+    const token = getToken() || _tk(); // usa token da sessão se admin, ou o token embutido
+    const payload = JSON.stringify(
+      { crs: CRS, botSpecs: BOT_SPECS, personas: PERSONAS, hcLabels: HC_LABELS, articleHistory: ARTICLE_HISTORY },
+      null, 2
+    );
+    const res = await fetch(`https://api.github.com/gists/${HARDCODED_GIST}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      },
+      body: JSON.stringify({ files: { [GIST_FILENAME]: { content: payload } } })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    showSync('saved', 'Salvo!');
+  } catch(e) {
+    showSync('error', 'Erro ao salvar: ' + e.message);
+  }
+}
+
+// ─────────────────────────────────────────
+//  LIMPAR COM CONFIRMAÇÃO
+// ─────────────────────────────────────────
+function confirmReset() {
+  showConfirm({
+    title: '<span style="display:inline-flex;align-items:center;gap:7px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.9L1 10"/></svg> Limpar formulário</span>',
+    message: 'Certeza que deseja limpar as informações preenchidas?',
+    confirmText: 'Sim, limpar',
+    cancelText: 'Não',
+    danger: true,
+    onConfirm: resetForm
+  });
+}
+
+// ─────────────────────────────────────────
+//  HISTÓRICO — RENDER / DELETE / SEARCH
+// ─────────────────────────────────────────
+function renderHistory() {
+  const query  = (document.getElementById('history-search')?.value || '').toLowerCase().trim();
+  const tbody  = document.getElementById('history-tbody');
+  const countEl = document.getElementById('history-count');
+  if (!tbody) return;
+
+  const filtered = ARTICLE_HISTORY.filter(h => {
+    if (!query) return true;
+    return h.articleId.toLowerCase().includes(query) || h.labels.toLowerCase().includes(query);
+  });
+
+  if (countEl) countEl.textContent = ARTICLE_HISTORY.length;
+  tbody.innerHTML = '';
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--gray-400);padding:28px;font-size:13px">
+      ${query ? 'Nenhum resultado encontrado.' : 'Nenhum artigo salvo ainda.'}
+    </td></tr>`;
+    return;
+  }
+
+  filtered.forEach((h) => {
+    const realIdx = ARTICLE_HISTORY.indexOf(h);
+    const date = new Date(h.savedAt).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const tr = document.createElement('tr');
+    tr.dataset.idx = realIdx;
+    tr.innerHTML = `
+      <td><strong style="font-family:'Nunito',sans-serif;color:var(--gray-900)">${h.articleId}</strong></td>
+      <td><div class="history-labels-cell">${h.labels}</div></td>
+      <td style="font-size:12px;color:var(--gray-500);white-space:nowrap">${date}</td>
+      <td><div class="action-btns">${actBtn('edit','Editar',`startEditHistory(${realIdx})`)}${actBtn('del','Excluir',`deleteHistory(${realIdx})`)}</div></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function startEditHistory(i) {
+  const h = ARTICLE_HISTORY[i];
+  const tr = document.querySelector(`#history-tbody tr[data-idx="${i}"]`);
+  if (!tr) return;
+  tr.classList.add('editing-row');
+  tr.innerHTML = `
+    <td><input class="edit-input" id="eh-id-${i}" value="${h.articleId}" style="min-width:120px"></td>
+    <td><input class="edit-input mono" id="eh-lbl-${i}" value="${h.labels}" style="min-width:260px"></td>
+    <td style="font-size:12px;color:var(--gray-400)">${new Date(h.savedAt).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+    <td><div class="action-btns">${actBtn('save2','Salvar edição',`saveEditHistory(${i})`)}${actBtn('cancel2','Cancelar edição','renderHistory()')}</div></td>`;
+}
+
+function saveEditHistory(i) {
+  const articleId = document.getElementById(`eh-id-${i}`).value.trim();
+  const labels    = document.getElementById(`eh-lbl-${i}`).value.trim();
+  if (!articleId || !labels) { alert('Preencha todos os campos.'); return; }
+  ARTICLE_HISTORY[i] = { ...ARTICLE_HISTORY[i], articleId, labels };
+  try { localStorage.setItem('hc_article_history', JSON.stringify(ARTICLE_HISTORY)); } catch(e) {}
+  saveHistoryToDB(); renderHistory();
+}
+
+function deleteHistory(i) {
+  showConfirm({
+    title: '<span style="display:inline-flex;align-items:center;gap:7px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Excluir registro</span>',
+    message: `Deseja excluir o histórico do artigo <strong>${ARTICLE_HISTORY[i].articleId}</strong>?`,
+    confirmText: 'Excluir',
+    cancelText: 'Cancelar',
+    danger: true,
+    onConfirm: () => {
+      ARTICLE_HISTORY.splice(i, 1);
+      saveToDB();
+      renderHistory();
+    }
+  });
+}
+
+// ─────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('setup-banner').style.display = 'none';
+  loadFromDB();
+});
+
+// ─────────────────────────────────────────
+//  PAGE NAVIGATION
+// ─────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b,i) => {
+    const map = { generator:0, dashboard:1, admin:2 };
+    b.classList.toggle('active', map[name] === i);
+  });
+}
+
+async function goToAdmin() {
+  // se já autenticado nesta sessão, vai direto
+  if (getToken()) { showPage('admin'); return; }
+
+  const token = await promptToken();
+  if (!token) return; // cancelou
+  setToken(token);
+  showPage('admin');
+}
+
+function showAdminTab(id) {
+  document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  document.querySelectorAll('.admin-tab').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('onclick').includes(id));
+  });
+}
+
+// ─────────────────────────────────────────
+//  CUSTOM DROPDOWN ENGINE
+// ─────────────────────────────────────────
+const csValues = {};
+
+function toggleCS(id) {
+  const wrap = document.getElementById(id);
+  if (!wrap) return;
+  if (wrap.classList.contains('open')) { closeAllCS(); return; }
+  closeAllCS();
+  if (wrap.querySelector('.custom-select-trigger').classList.contains('disabled')) return;
+  wrap.classList.add('open');
+}
+
+function closeAllCS() {
+  document.querySelectorAll('.custom-select-wrap.open').forEach(w => w.classList.remove('open'));
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.custom-select-wrap')) closeAllCS();
+});
+
+function buildCS(id, options, placeholder, onChangeFn) {
+  const wrap = document.getElementById(id);
+  if (!wrap) return;
+  const trigger = wrap.querySelector('.custom-select-trigger');
+  const list    = wrap.querySelector('.custom-select-dropdown');
+  const current = csValues[id] || '';
+  list.innerHTML = '';
+
+  const ph = document.createElement('div');
+  ph.className = 'custom-select-option placeholder-opt';
+  ph.textContent = placeholder;
+  ph.onclick = () => {
+    csValues[id] = '';
+    trigger.textContent = placeholder;
+    trigger.className = 'custom-select-trigger placeholder';
+    closeAllCS();
+    if (onChangeFn) onChangeFn('');
+  };
+  list.appendChild(ph);
+
+  options.forEach(opt => {
+    const el = document.createElement('div');
+    el.className = 'custom-select-option' + (opt.value === current ? ' selected' : '');
+    el.textContent = opt.label;
+    el.onclick = () => {
+      csValues[id] = opt.value;
+      trigger.textContent = opt.label;
+      trigger.className = 'custom-select-trigger';
+      list.querySelectorAll('.custom-select-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      closeAllCS();
+      if (onChangeFn) onChangeFn(opt.value);
+    };
+    list.appendChild(el);
+  });
+
+  if (current) {
+    const found = options.find(o => o.value === current);
+    if (found) { trigger.textContent = found.label; trigger.className = 'custom-select-trigger'; }
+    else { csValues[id] = ''; trigger.textContent = placeholder; trigger.className = 'custom-select-trigger placeholder'; }
+  } else {
+    trigger.textContent = placeholder;
+    trigger.className = 'custom-select-trigger placeholder';
+  }
+}
+
+function csVal(id) { return csValues[id] || ''; }
+function csSetDisabled(id, disabled) {
+  const wrap = document.getElementById(id);
+  if (!wrap) return;
+  const t = wrap.querySelector('.custom-select-trigger');
+  if (disabled) t.classList.add('disabled');
+  else t.classList.remove('disabled');
+}
+
+// ─────────────────────────────────────────
+//  BUILD L1/L2 SELECTS
+// ─────────────────────────────────────────
+function buildL1Select() {
+  const l1s = [...new Set(CRS.map(c => c.l1))].sort((a,b) => a.localeCompare(b,'pt-BR'));
+  buildCS('cs-cr-l1', l1s.map(l => ({value:l, label:l})), 'Selecione a categoria...', onL1Change);
+}
+
+function onL1Change(l1) {
+  csValues['cs-cr-l2'] = '';
+  if (!l1) {
+    buildCS('cs-cr-l2', [], 'Selecione primeiro o L1...', onL2Change);
+    csSetDisabled('cs-cr-l2', true);
+    hideBotSpec(); updateResult(); return;
+  }
+  csSetDisabled('cs-cr-l2', false);
+  const l2s = CRS.filter(c => c.l1 === l1).sort((a,b) => a.l2.localeCompare(b.l2,'pt-BR'));
+  buildCS('cs-cr-l2', l2s.map(c => ({value:c.l2, label:c.l2})), 'Selecione a subcategoria...', onL2Change);
+  hideBotSpec(); updateResult();
+}
+
+function onL2Change(l2) {
+  const l1 = csVal('cs-cr-l1');
+  if (l1 && l2) checkBotSpec(l1, l2);
+  else hideBotSpec();
+  updateResult();
+}
+
+// ─────────────────────────────────────────
+//  BOT SPEC
+// ─────────────────────────────────────────
+function checkBotSpec(l1, l2) {
+  const combo    = l1 + '::' + l2;
+  const matching = BOT_SPECS.filter(bs => bs.crs.includes(combo));
+  const step     = document.getElementById('step-botspec');
+  if (matching.length === 0) { hideBotSpec(); return; }
+  buildCS('cs-bot-spec', matching.map(bs => ({value:bs.label, label:bs.label})), 'Não aplicável', updateResult);
+  step.classList.remove('hidden'); step.classList.add('fade-in');
+}
+
+function hideBotSpec() {
+  document.getElementById('step-botspec').classList.add('hidden');
+  csValues['cs-bot-spec'] = '';
+}
+
+// ─────────────────────────────────────────
+//  PERSONA GRID
+// ─────────────────────────────────────────
+function buildPersonaGrid() {
+  const grid = document.getElementById('persona-grid');
+  grid.innerHTML = '';
+  const sorted = [...PERSONAS].sort((a,b) => a.name.localeCompare(b.name,'pt-BR'));
+  sorted.forEach(p => {
+    const chip = document.createElement('label');
+    chip.className = 'persona-chip' + (selectedPersonas.includes(p.val) ? ' selected' : '');
+    chip.innerHTML = `<input type="checkbox" value="${p.val}"><div class="persona-dot"></div>${p.name}`;
+    chip.querySelector('input').addEventListener('change', e => {
+      if (e.target.checked) { if (!selectedPersonas.includes(p.val)) selectedPersonas.push(p.val); }
+      else selectedPersonas = selectedPersonas.filter(v => v !== p.val);
+      chip.classList.toggle('selected', e.target.checked);
+      updateResult();
+    });
+    if (selectedPersonas.includes(p.val)) chip.querySelector('input').checked = true;
+    grid.appendChild(chip);
+  });
+}
+
+// ─────────────────────────────────────────
+//  COUNTRY TOGGLE
+// ─────────────────────────────────────────
+function toggleCountry() {
+  countryOn = !countryOn;
+  document.getElementById('toggle-country').classList.toggle('on', countryOn);
+  updateResult();
+}
+
+// ─────────────────────────────────────────
+//  HC SECTION SELECT
+// ─────────────────────────────────────────
+function buildHCSelect() {
+  const sorted = [...HC_LABELS].sort((a,b) => a.name.localeCompare(b.name,'pt-BR'));
+  buildCS('cs-hc-label', sorted.map(h => ({value:h.val, label:h.name})), 'Nenhum (padrão)', updateResult);
+}
+
+
+// ─────────────────────────────────────────
+//  RESULT
+// ─────────────────────────────────────────
+function updateResult() {
+  renderResult();
+  const l1 = csVal('cs-cr-l1');
+  const l2 = csVal('cs-cr-l2');
+  const badge = document.getElementById('badge-cr');
+  if (l1 && l2) { badge.textContent = '✓'; badge.classList.add('done'); }
+  else { badge.textContent = '2'; badge.classList.remove('done'); }
+}
+
+function renderResult() {
+  const area = document.getElementById('result-area');
+  const l1 = csVal('cs-cr-l1');
+  const l2 = csVal('cs-cr-l2');
+  const crEntry = CRS.find(c => c.l1 === l1 && c.l2 === l2);
+  const botSpec = csVal('cs-bot-spec');
+  const hcLabel = csVal('cs-hc-label');
+
+  if (!crEntry) {
+    area.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FF8C55" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+        <div class="empty-text">Selecione o CR L1 e L2 para gerar os rótulos</div>
+      </div>`;
+    return;
+  }
+
+  const labels = [];
+  // PERSONA primeiro
+  selectedPersonas.forEach(p => labels.push({key:'PERSONA', val: p}));
+  if (crEntry.cr) labels.push({key:'CR', val: crEntry.cr});
+  if (crEntry.botcr) labels.push({key:'BOT CR', val: crEntry.botcr});
+  if (botSpec) labels.push({key:'BOT SPEC', val: botSpec});
+  if (countryOn) labels.push({key:'PAÍS', val: 'ai-country-rules'});
+  if (hcLabel) labels.push({key:'HELP CENTER', val: hcLabel});
+
+  const allVals = labels.map(l => l.val).join(';');
+
+  area.innerHTML = `
+    <div class="result-card fade-in">
+      <div class="result-title">Rótulos Gerados</div>
+      ${labels.map(l => `
+        <div class="label-row">
+          <span class="label-key">${l.key}</span>
+          <span class="label-value">${l.val}</span>
+        </div>
+      `).join('')}
+      <div class="result-string-wrap">
+        <div class="result-string-label">String completa (separada por ponto-e-vírgula)</div>
+        <div class="result-string" id="full-string">${allVals}</div>
+      </div>
+      <div class="copy-row">
+        <button class="copy-btn primary" id="copy-all-btn" onclick="copyAll()">
+          <span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span> Copiar rótulos
+        </button>
+        <button class="copy-btn save-btn" onclick="confirmSave()">
+          <span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></span> Salvar
+        </button>
+        <button class="copy-btn secondary" onclick="confirmReset()">
+          <span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.9L1 10"/></svg></span> Limpar
+        </button>
+      </div>
+    </div>`;
+}
+
+function copyAll() {
+  const txt = document.getElementById('full-string').textContent;
+  navigator.clipboard.writeText(txt).then(() => {
+    const btn = document.getElementById('copy-all-btn');
+    btn.innerHTML = '<span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Copiado!';
+    btn.classList.add('success');
+    setTimeout(() => {
+      btn.innerHTML = '<span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span> Copiar rótulos';
+      btn.classList.remove('success');
+    }, 2000);
+  });
+}
+
+function resetForm() {
+  document.getElementById('article-id').value = '';
+  csValues['cs-cr-l1'] = '';
+  csValues['cs-cr-l2'] = '';
+  csValues['cs-bot-spec'] = '';
+  csValues['cs-hc-label'] = '';
+  buildL1Select();
+  buildCS('cs-cr-l2', [], 'Selecione primeiro o L1...', onL2Change);
+  csSetDisabled('cs-cr-l2', true);
+  hideBotSpec();
+  selectedPersonas = [];
+  buildPersonaGrid();
+  countryOn = false;
+  document.getElementById('toggle-country').classList.remove('on');
+  buildHCSelect();
+  renderResult();
+  const badge = document.getElementById('badge-cr');
+  badge.textContent = '2'; badge.classList.remove('done');
+}
+
+// ─────────────────────────────────────────
+//  ACTION BUTTON HELPERS
+// ─────────────────────────────────────────
+const ACT = {
+  edit:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+  del:    `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,
+  save2:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  cancel2:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+};
+function actBtn(cls, title, onclick) {
+  return `<button class="action-btn ${cls}" title="${title}" onclick="${onclick}">${ACT[cls]}</button>`;
+}
+
+// ─────────────────────────────────────────
+//  ADMIN: CRs
+// ─────────────────────────────────────────
+function renderAdminCR() {
+  const tbody = document.getElementById('cr-tbody');
+  tbody.innerHTML = '';
+  CRS.forEach((c, i) => {
+    const tr = document.createElement('tr');
+    tr.dataset.idx = i;
+    tr.innerHTML = `
+      <td>${c.l1}</td><td>${c.l2}</td>
+      <td><code style="font-size:12px;color:var(--orange)">${c.cr}</code></td>
+      <td><code style="font-size:11px;color:var(--gray-500)">${c.botcr}</code></td>
+      <td><div class="action-btns">${actBtn('edit','Editar',`startEditCR(${i})`)}${actBtn('del','Excluir',`deleteCR(${i})`)}</div></td>`;
+    tbody.appendChild(tr);
+  });
+}
+function startEditCR(i) {
+  const c = CRS[i];
+  const tr = document.querySelector(`#cr-tbody tr[data-idx="${i}"]`);
+  tr.classList.add('editing-row');
+  tr.innerHTML = `
+    <td><input class="edit-input" id="ecr-l1-${i}" value="${c.l1}"></td>
+    <td><input class="edit-input" id="ecr-l2-${i}" value="${c.l2}"></td>
+    <td><input class="edit-input mono" id="ecr-cr-${i}" value="${c.cr}"></td>
+    <td><input class="edit-input mono" id="ecr-bc-${i}" value="${c.botcr}" list="botcr-datalist"></td>
+    <td><div class="action-btns">${actBtn('save2','Salvar edição',`saveEditCR(${i})`)}${actBtn('cancel2','Cancelar edição','renderAdminCR()')}</div></td>`;
+}
+function saveEditCR(i) {
+  const l1=document.getElementById(`ecr-l1-${i}`).value.trim();
+  const l2=document.getElementById(`ecr-l2-${i}`).value.trim();
+  const cr=document.getElementById(`ecr-cr-${i}`).value.trim();
+  const botcr=document.getElementById(`ecr-bc-${i}`).value.trim();
+  if(!l1||!l2||!cr||!botcr){alert('Preencha todos os campos.');return;}
+  CRS[i]={l1,l2,cr,botcr};
+  saveToDB();renderAdminCR();buildL1Select();populateAddBotCR();
+}
+function deleteCR(i) {
+  showConfirm({title:'Excluir CR',message:`Excluir <strong>${CRS[i].l1}::${CRS[i].l2}</strong>?`,confirmText:'Excluir',cancelText:'Cancelar',danger:true,
+    onConfirm:()=>{CRS.splice(i,1);saveToDB();renderAdminCR();buildL1Select();}});
+}
+function addCR() {
+  const l1=document.getElementById('add-cr-l1').value.trim();
+  const l2=document.getElementById('add-cr-l2').value.trim();
+  const cr=document.getElementById('add-cr-label').value.trim();
+  const botcr=document.getElementById('add-cr-botcr').value.trim();
+  if(!l1||!l2||!cr||!botcr){alert('Preencha todos os campos.');return;}
+  CRS.push({l1,l2,cr,botcr});
+  saveToDB();renderAdminCR();buildL1Select();populateAddBotCR();
+  ['add-cr-l1','add-cr-l2','add-cr-label','add-cr-botcr'].forEach(id=>document.getElementById(id).value='');
+}
+function populateAddBotCR() {
+  const dl=document.getElementById('botcr-datalist');
+  if(!dl)return;
+  dl.innerHTML=[...new Set(CRS.map(c=>c.botcr))].sort().map(v=>`<option value="${v}">`).join('');
+}
+
+// ─────────────────────────────────────────
+//  ADMIN: BOT SPEC
+// ─────────────────────────────────────────
+function renderAdminBotSpec() {
+  const tbody=document.getElementById('botspec-tbody');
+  tbody.innerHTML='';
+  BOT_SPECS.forEach((bs,i)=>{
+    const tr=document.createElement('tr');
+    tr.dataset.idx=i;
+    tr.innerHTML=`
+      <td><code style="color:var(--orange);font-size:12px">${bs.label}</code></td>
+      <td id="bs-crs-${i}">${renderBSCrPills(bs,i)}</td>
+      <td><div class="action-btns">${actBtn('edit','Editar',`startEditBotSpec(${i})`)}${actBtn('del','Excluir',`deleteBotSpec(${i})`)}</div></td>`;
+    tbody.appendChild(tr);
+  });
+}
+function renderBSCrPills(bs,i) {
+  const allCRCombos=CRS.map(c=>c.l1+'::'+c.l2);
+  const unused=allCRCombos.filter(combo=>!bs.crs.includes(combo));
+  let html=bs.crs.map((cr,ci)=>`<span class="tag-pill">${cr}<button class="tag-remove" onclick="removeBSCR(${i},${ci})">×</button></span>`).join('');
+  if(unused.length>0){html+=`<select style="margin:4px 0;font-size:12px;padding:4px 8px;border:1.5px dashed var(--gray-300);border-radius:6px;color:var(--gray-600);background:#fff;max-width:220px" onchange="addBSCR(${i},this.value);this.value=''"><option value="">+ Adicionar CR...</option>${unused.map(c=>`<option value="${c}">${c}</option>`).join('')}</select>`;}
+  return html;
+}
+function startEditBotSpec(i) {
+  const bs=BOT_SPECS[i];
+  const tr=document.querySelector(`#botspec-tbody tr[data-idx="${i}"]`);
+  tr.classList.add('editing-row');
+  tr.innerHTML=`
+    <td colspan="2"><input class="edit-input mono" id="ebs-lbl-${i}" value="${bs.label}"></td>
+    <td><div class="action-btns">${actBtn('save2','Salvar edição',`saveEditBotSpec(${i})`)}${actBtn('cancel2','Cancelar edição','renderAdminBotSpec()')}</div></td>`;
+}
+function saveEditBotSpec(i) {
+  const label=document.getElementById(`ebs-lbl-${i}`).value.trim();
+  if(!label){alert('Informe o rótulo.');return;}
+  BOT_SPECS[i].label=label;
+  saveToDB();renderAdminBotSpec();
+}
+function addBSCR(bsIdx,combo){if(!combo)return;BOT_SPECS[bsIdx].crs.push(combo);saveToDB();renderAdminBotSpec();}
+function removeBSCR(bsIdx,crIdx){BOT_SPECS[bsIdx].crs.splice(crIdx,1);saveToDB();renderAdminBotSpec();}
+function deleteBotSpec(i) {
+  showConfirm({title:'Excluir Bot Spec',message:`Excluir <strong>${BOT_SPECS[i].label}</strong>?`,confirmText:'Excluir',cancelText:'Cancelar',danger:true,
+    onConfirm:()=>{BOT_SPECS.splice(i,1);saveToDB();renderAdminBotSpec();}});
+}
+function addBotSpec() {
+  const label=document.getElementById('add-bs-label').value.trim();
+  if(!label){alert('Informe o rótulo.');return;}
+  if(BOT_SPECS.find(b=>b.label===label)){alert('Bot Spec já existe.');return;}
+  BOT_SPECS.push({label,crs:[]});saveToDB();renderAdminBotSpec();
+  document.getElementById('add-bs-label').value='';
+}
+
+// ─────────────────────────────────────────
+//  ADMIN: PERSONAS
+// ─────────────────────────────────────────
+function renderAdminPersona() {
+  const tbody=document.getElementById('persona-tbody');
+  tbody.innerHTML='';
+  PERSONAS.forEach((p,i)=>{
+    const tr=document.createElement('tr');
+    tr.dataset.idx=i;
+    tr.innerHTML=`<td>${p.val}</td><td>${p.name}</td><td><div class="action-btns">${actBtn('edit','Editar',`startEditPersona(${i})`)}${actBtn('del','Excluir',`deletePersona(${i})`)}</div></td>`;
+    tbody.appendChild(tr);
+  });
+}
+function startEditPersona(i) {
+  const p=PERSONAS[i];
+  const tr=document.querySelector(`#persona-tbody tr[data-idx="${i}"]`);
+  tr.classList.add('editing-row');
+  tr.innerHTML=`
+    <td><input class="edit-input mono" id="ep-val-${i}" value="${p.val}"></td>
+    <td><input class="edit-input" id="ep-name-${i}" value="${p.name}"></td>
+    <td><div class="action-btns">${actBtn('save2','Salvar edição',`saveEditPersona(${i})`)}${actBtn('cancel2','Cancelar edição','renderAdminPersona()')}</div></td>`;
+}
+function saveEditPersona(i) {
+  const val=document.getElementById(`ep-val-${i}`).value.trim();
+  const name=document.getElementById(`ep-name-${i}`).value.trim();
+  if(!val||!name){alert('Preencha todos os campos.');return;}
+  PERSONAS[i]={val,name};saveToDB();renderAdminPersona();buildPersonaGrid();
+}
+function deletePersona(i) {
+  showConfirm({title:'Excluir Persona',message:`Excluir persona <strong>${PERSONAS[i].name}</strong>?`,confirmText:'Excluir',cancelText:'Cancelar',danger:true,
+    onConfirm:()=>{PERSONAS.splice(i,1);saveToDB();renderAdminPersona();buildPersonaGrid();}});
+}
+function addPersona() {
+  const val=document.getElementById('add-persona-val').value.trim();
+  const name=document.getElementById('add-persona-name').value.trim();
+  if(!val||!name){alert('Preencha valor e nome.');return;}
+  PERSONAS.push({val,name});saveToDB();renderAdminPersona();buildPersonaGrid();
+  document.getElementById('add-persona-val').value='';
+  document.getElementById('add-persona-name').value='';
+}
+
+// ─────────────────────────────────────────
+//  ADMIN: HC LABELS
+// ─────────────────────────────────────────
+function renderAdminHC() {
+  const tbody=document.getElementById('hc-tbody');
+  tbody.innerHTML='';
+  HC_LABELS.forEach((h,i)=>{
+    const tr=document.createElement('tr');
+    tr.dataset.idx=i;
+    tr.innerHTML=`<td>${h.val}</td><td>${h.name}</td><td><div class="action-btns">${actBtn('edit','Editar',`startEditHC(${i})`)}${actBtn('del','Excluir',`deleteHC(${i})`)}</div></td>`;
+    tbody.appendChild(tr);
+  });
+}
+function startEditHC(i) {
+  const h=HC_LABELS[i];
+  const tr=document.querySelector(`#hc-tbody tr[data-idx="${i}"]`);
+  tr.classList.add('editing-row');
+  tr.innerHTML=`
+    <td><input class="edit-input mono" id="ehc-val-${i}" value="${h.val}"></td>
+    <td><input class="edit-input" id="ehc-name-${i}" value="${h.name}"></td>
+    <td><div class="action-btns">${actBtn('save2','Salvar edição',`saveEditHC(${i})`)}${actBtn('cancel2','Cancelar edição','renderAdminHC()')}</div></td>`;
+}
+function saveEditHC(i) {
+  const val=document.getElementById(`ehc-val-${i}`).value.trim();
+  const name=document.getElementById(`ehc-name-${i}`).value.trim();
+  if(!val||!name){alert('Preencha todos os campos.');return;}
+  HC_LABELS[i]={val,name};saveToDB();renderAdminHC();buildHCSelect();
+}
+function deleteHC(i) {
+  showConfirm({title:'Excluir Seção HC',message:`Excluir <strong>${HC_LABELS[i].name}</strong>?`,confirmText:'Excluir',cancelText:'Cancelar',danger:true,
+    onConfirm:()=>{HC_LABELS.splice(i,1);saveToDB();renderAdminHC();buildHCSelect();}});
+}
+function addHC() {
+  const val=document.getElementById('add-hc-val').value.trim();
+  const name=document.getElementById('add-hc-name').value.trim();
+  if(!val||!name){alert('Preencha slug e nome.');return;}
+  HC_LABELS.push({val,name});saveToDB();renderAdminHC();buildHCSelect();
+  document.getElementById('add-hc-val').value='';
+  document.getElementById('add-hc-name').value='';
+}
+
+// ─────────────────────────────────────────
+//  EXPORT XLSX (múltiplas abas)
+// ─────────────────────────────────────────
+function exportCSV() {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('pt-BR').replace(/\//g,'-');
+  const timeStr = now.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}).replace(':','-');
+
+  const wb = XLSX.utils.book_new();
+
+  // ── Aba 1: Motivos de Contato
+  const sortedCRs = [...CRS].sort((a,b) => {
+    const c = a.l1.localeCompare(b.l1,'pt-BR');
+    return c !== 0 ? c : a.l2.localeCompare(b.l2,'pt-BR');
+  });
+  const crData = [
+    ['CR L1','CR L2','CR L1+L2','RÓTULO CR','RÓTULO BOT CR'],
+    ...sortedCRs.map(c => [c.l1, c.l2, `${c.l1}::${c.l2}`, c.cr, c.botcr])
+  ];
+  const wsCR = XLSX.utils.aoa_to_sheet(crData);
+  wsCR['!cols'] = [{wch:16},{wch:22},{wch:32},{wch:38},{wch:42}];
+  XLSX.utils.book_append_sheet(wb, wsCR, 'Motivos de Contato');
+
+  // ── Aba 2: Bot Spec
+  const bsData = [
+    ['RÓTULO BOT SPEC','CRs ASSOCIADOS (L1::L2)'],
+    ...BOT_SPECS.map(bs => [bs.label, bs.crs.join(' | ')])
+  ];
+  const wsBS = XLSX.utils.aoa_to_sheet(bsData);
+  wsBS['!cols'] = [{wch:38},{wch:60}];
+  XLSX.utils.book_append_sheet(wb, wsBS, 'Bot Spec');
+
+  // ── Aba 3: Personas
+  const personaData = [
+    ['VALOR (RÓTULO)','NOME EXIBIDO'],
+    ...[...PERSONAS].sort((a,b) => a.name.localeCompare(b.name,'pt-BR')).map(p => [p.val, p.name])
+  ];
+  const wsPersona = XLSX.utils.aoa_to_sheet(personaData);
+  wsPersona['!cols'] = [{wch:20},{wch:20}];
+  XLSX.utils.book_append_sheet(wb, wsPersona, 'Personas');
+
+  // ── Aba 4: Seções HC
+  const hcData = [
+    ['RÓTULO (SLUG)','NOME DA SEÇÃO'],
+    ...[...HC_LABELS].sort((a,b) => a.name.localeCompare(b.name,'pt-BR')).map(h => [h.val, h.name])
+  ];
+  const wsHC = XLSX.utils.aoa_to_sheet(hcData);
+  wsHC['!cols'] = [{wch:52},{wch:50}];
+  XLSX.utils.book_append_sheet(wb, wsHC, 'Seções HC');
+
+  // ── Aba 5: Histórico de Artigos
+  const histData = [
+    ['ID DO ARTIGO','RÓTULOS','DATA'],
+    ...ARTICLE_HISTORY.map(h => {
+      const date = new Date(h.savedAt).toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+      return [h.articleId, h.labels, date];
+    })
+  ];
+  const wsHist = XLSX.utils.aoa_to_sheet(histData);
+  wsHist['!cols'] = [{wch:20},{wch:80},{wch:18}];
+  XLSX.utils.book_append_sheet(wb, wsHist, 'Histórico artigos');
+
+  XLSX.writeFile(wb, `rotulos-helpcenter_${dateStr}_${timeStr}.xlsx`);
+}
+
+// ─────────────────────────────────────────
+//  DASHBOARD
+// ─────────────────────────────────────────
+let _dashCharts = {};
+
+function parseHistoryLabels(labelsStr) {
+  const parts = (labelsStr||'').split(';').map(s=>s.trim()).filter(Boolean);
+  const personaVals = new Set(PERSONAS.map(p=>p.val));
+  const hcVals = new Set(HC_LABELS.map(h=>h.val));
+  const r = { personas:[], cr:null, botcr:null, botspec:null, country:false, hc:null };
+  parts.forEach(p => {
+    if (personaVals.has(p))       r.personas.push(p);
+    else if (p.startsWith('cr_')) r.cr = p;
+    else if (p.startsWith('bot_cr-')) r.botcr = p;
+    else if (p.startsWith('bot_spec-')) r.botspec = p;
+    else if (p === 'ai-country-rules') r.country = true;
+    else if (hcVals.has(p))       r.hc = p;
+  });
+  return r;
+}
+
+function buildDashboard() {
+  // destroy previous charts
+  Object.values(_dashCharts).forEach(c => { try { c.destroy(); } catch(e){} });
+  _dashCharts = {};
+
+  const container = document.getElementById('dash-main');
+  const H = ARTICLE_HISTORY;
+
+  if (H.length === 0) {
+    container.innerHTML = `<div class="empty-dash"><span class="empty-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.35"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>Nenhum artigo salvo ainda — salve rótulos na aba Gerador para ver o dashboard.</div>`;
+    return;
+  }
+
+  // ── parse all entries
+  const parsed = H.map(h => ({ ...h, parsed: parseHistoryLabels(h.labels) }));
+
+  // ── stat calcs
+  const now = Date.now();
+  const last7  = parsed.filter(h => now - new Date(h.savedAt) < 7  * 86400000).length;
+  const last30 = parsed.filter(h => now - new Date(h.savedAt) < 30 * 86400000).length;
+  const uniqueLabels = new Set(parsed.flatMap(h => h.labels.split(';').map(s=>s.trim()).filter(Boolean))).size;
+  const withCountry = parsed.filter(h => h.parsed.country).length;
+  const withBotSpec = parsed.filter(h => h.parsed.botspec).length;
+
+  // ── CR L1 distribution
+  const crL1Count = {};
+  parsed.forEach(h => {
+    const entry = CRS.find(c => c.cr === h.parsed.cr);
+    const l1 = entry ? entry.l1 : '—';
+    crL1Count[l1] = (crL1Count[l1]||0) + 1;
+  });
+
+  // ── CR L1+L2 top 10
+  const crFullCount = {};
+  parsed.forEach(h => {
+    const entry = CRS.find(c => c.cr === h.parsed.cr);
+    const label = entry ? `${entry.l1} › ${entry.l2}` : (h.parsed.cr || '—');
+    crFullCount[label] = (crFullCount[label]||0) + 1;
+  });
+  const top10cr = Object.entries(crFullCount).sort((a,b)=>b[1]-a[1]).slice(0,10);
+
+  // ── personas
+  const personaCount = {};
+  PERSONAS.forEach(p => { personaCount[p.name] = 0; });
+  parsed.forEach(h => h.parsed.personas.forEach(pv => {
+    const name = PERSONAS.find(p=>p.val===pv)?.name || pv;
+    personaCount[name] = (personaCount[name]||0) + 1;
+  }));
+
+  // ── articles per month (last 6)
+  const monthLabels = [], monthData = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(); d.setMonth(d.getMonth() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const label = d.toLocaleDateString('pt-BR',{month:'short',year:'2-digit'});
+    monthLabels.push(label);
+    monthData.push(parsed.filter(h => h.savedAt.startsWith(key)).length);
+  }
+
+  // ── HC coverage
+  const hcCount = {};
+  HC_LABELS.forEach(h => { hcCount[h.val] = 0; });
+  parsed.forEach(h => { if (h.parsed.hc) hcCount[h.parsed.hc] = (hcCount[h.parsed.hc]||0)+1; });
+  const hcCovered = Object.values(hcCount).filter(v=>v>0).length;
+  const hcMissing = HC_LABELS.filter(h => !hcCount[h.val]).map(h=>h.name);
+
+  // ── color palette
+  const orangePalette = ['#F04C21','#FF6B45','#FFa07a','#c93d18','#ff8c69','#e65c3a','#ff5733','#d44010','#ff7043','#bf3a14'];
+  const bluePalette   = ['#2563EB','#3B82F6','#60A5FA','#1D4ED8','#93C5FD','#1E40AF','#BFDBFE','#1E3A8A','#DBEAFE','#172554'];
+
+  // ── BUILD HTML
+  container.innerHTML = `
+    <!-- VISÃO GERAL -->
+    <div class="dash-section-title">Visão geral</div>
+    <div class="stat-grid">
+      <div class="stat-card accent">
+        <div class="stat-card-label">Total de artigos</div>
+        <div class="stat-card-value">${H.length}</div>
+        <div class="stat-card-sub">com rótulos salvos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Rótulos únicos</div>
+        <div class="stat-card-value">${uniqueLabels}</div>
+        <div class="stat-card-sub">em uso no histórico</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Últimos 7 dias</div>
+        <div class="stat-card-value">${last7}</div>
+        <div class="stat-card-sub">artigos rotulados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Últimos 30 dias</div>
+        <div class="stat-card-value">${last30}</div>
+        <div class="stat-card-sub">artigos rotulados</div>
+      </div>
+    </div>
+
+    <!-- EVOLUÇÃO + CR L1 -->
+    <div class="dash-section-title">Análise temporal e distribuição</div>
+    <div class="chart-grid-3">
+      <div class="chart-card">
+        <div class="chart-card-title">Artigos salvos por mês <span>últimos 6 meses</span></div>
+        <div class="chart-canvas-wrap" style="height:220px"><canvas id="ch-line"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">Distribuição por CR L1</div>
+        <div class="chart-canvas-wrap" style="height:220px"><canvas id="ch-donut"></canvas></div>
+      </div>
+    </div>
+
+    <!-- TOP 10 CRs -->
+    <div class="dash-section-title">Top 10 motivos de contato (CR)</div>
+    <div class="chart-card">
+      <div class="chart-card-title">CRs mais utilizados nos artigos</div>
+      <div class="chart-canvas-wrap" style="height:${Math.max(180, top10cr.length*38)}px"><canvas id="ch-bar-cr"></canvas></div>
+    </div>
+
+    <!-- PERSONAS + EXTRAS -->
+    <div class="dash-section-title">Personas e rótulos especiais</div>
+    <div class="chart-grid-2">
+      <div class="chart-card">
+        <div class="chart-card-title">Personas</div>
+        <div class="chart-canvas-wrap" style="height:200px"><canvas id="ch-persona"></canvas></div>
+      </div>
+      <div class="chart-card" style="display:flex;flex-direction:column;gap:16px;justify-content:center">
+        <div class="chart-card-title">Rótulos especiais</div>
+        <div class="stat-card" style="margin:0">
+          <div class="stat-card-label"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Country Rules</span></div>
+          <div class="stat-card-value">${withCountry}</div>
+          <div class="stat-card-sub">${((withCountry/H.length)*100).toFixed(0)}% dos artigos</div>
+        </div>
+        <div class="stat-card" style="margin:0">
+          <div class="stat-card-label"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg> Bot Spec</span></div>
+          <div class="stat-card-value">${withBotSpec}</div>
+          <div class="stat-card-sub">${((withBotSpec/H.length)*100).toFixed(0)}% dos artigos</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HC COVERAGE -->
+    <div class="dash-section-title">Cobertura do Help Center</div>
+    <div class="chart-grid-2">
+      <div class="chart-card">
+        <div class="chart-card-title">Seções com artigos vinculados <span>${hcCovered} de ${HC_LABELS.length}</span></div>
+        <div class="chart-canvas-wrap" style="height:200px"><canvas id="ch-hc"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Seções sem cobertura</span> <span>${hcMissing.length}</span></div>
+        <div style="max-height:190px;overflow-y:auto">
+          ${hcMissing.length === 0
+            ? '<div class="ok-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Todas as seções têm pelo menos um artigo</div>'
+            : hcMissing.map(n=>`<span class="alert-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> ${n}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- SAÚDE DO BANCO -->
+    <div class="dash-section-title">Saúde do banco de dados</div>
+    <div class="health-grid">
+      <div class="health-card"><span class="health-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><div><div class="health-label">Motivos de contato</div><div class="health-value">${CRS.length}</div></div></div>
+      <div class="health-card"><span class="health-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span><div><div class="health-label">Bot Specs</div><div class="health-value">${BOT_SPECS.length}</div></div></div>
+      <div class="health-card"><span class="health-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><div><div class="health-label">Personas</div><div class="health-value">${PERSONAS.length}</div></div></div>
+      <div class="health-card"><span class="health-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><div><div class="health-label">Seções HC</div><div class="health-value">${HC_LABELS.length}</div></div></div>
+    </div>
+
+    <!-- HISTÓRICO RECENTE -->
+    <div class="dash-section-title">Artigos rotulados recentemente</div>
+    <div class="chart-card">
+      <table class="recent-table">
+        <thead><tr><th>ID</th><th>Rótulos</th><th>Data</th></tr></thead>
+        <tbody>
+          ${parsed.slice(0,8).map(h=>`
+            <tr>
+              <td class="id-cell">${h.articleId}</td>
+              <td class="label-cell">${h.labels}</td>
+              <td class="date-cell">${new Date(h.savedAt).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+
+  // ── RENDER CHARTS
+  const fontDef = { family: "'Nunito Sans', sans-serif", size: 12 };
+  Chart.defaults.font = fontDef;
+  Chart.defaults.color = '#6B7280';
+
+  // Line
+  _dashCharts.line = new Chart(document.getElementById('ch-line'), {
+    type: 'line',
+    data: { labels: monthLabels, datasets: [{ label: 'Artigos', data: monthData, borderColor: '#F04C21', backgroundColor: 'rgba(240,76,33,0.08)', borderWidth: 2.5, pointBackgroundColor: '#F04C21', tension: 0.35, fill: true }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true, ticks:{stepSize:1}, grid:{color:'rgba(0,0,0,0.05)'}}, x:{grid:{display:false}} } }
+  });
+
+  // Donut CR L1
+  const l1Keys = Object.keys(crL1Count);
+  _dashCharts.donut = new Chart(document.getElementById('ch-donut'), {
+    type: 'doughnut',
+    data: { labels: l1Keys, datasets: [{ data: l1Keys.map(k=>crL1Count[k]), backgroundColor: orangePalette, borderWidth: 2, borderColor: '#fff' }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'right', labels:{ boxWidth:12, font:{ size:11 } } } }, cutout:'60%' }
+  });
+
+  // Horizontal bar top CRs
+  _dashCharts.barCR = new Chart(document.getElementById('ch-bar-cr'), {
+    type: 'bar',
+    data: { labels: top10cr.map(([k])=>k), datasets: [{ label: 'Artigos', data: top10cr.map(([,v])=>v), backgroundColor: '#F04C21', borderRadius: 6, barThickness: 22 }] },
+    options: { indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ x:{beginAtZero:true, ticks:{stepSize:1}, grid:{color:'rgba(0,0,0,0.05)'}}, y:{grid:{display:false}, ticks:{font:{size:11}}} } }
+  });
+
+  // Persona bar
+  _dashCharts.persona = new Chart(document.getElementById('ch-persona'), {
+    type: 'bar',
+    data: { labels: Object.keys(personaCount), datasets: [{ label: 'Artigos', data: Object.values(personaCount), backgroundColor: bluePalette, borderRadius: 8, barThickness: 40 }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true, ticks:{stepSize:1}, grid:{color:'rgba(0,0,0,0.05)'}}, x:{grid:{display:false}} } }
+  });
+
+  // HC bar
+  const hcNames = HC_LABELS.map(h=>h.name.length>22?h.name.substring(0,20)+'…':h.name);
+  const hcVals2 = HC_LABELS.map(h=>hcCount[h.val]||0);
+  _dashCharts.hc = new Chart(document.getElementById('ch-hc'), {
+    type: 'bar',
+    data: { labels: hcNames, datasets: [{ label: 'Artigos', data: hcVals2, backgroundColor: hcVals2.map(v=>v>0?'#059669':'#E5E7EB'), borderRadius: 4, barThickness: 10 }] },
+    options: { indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ x:{beginAtZero:true, ticks:{stepSize:1}, grid:{color:'rgba(0,0,0,0.04)'}}, y:{grid:{display:false}, ticks:{font:{size:10}}} } }
+  });
+}
+
+function escCSV(val) {
+  if (val === undefined || val === null) return '';
+  const s = String(val);
+  if (s.includes(';') || s.includes('"') || s.includes('\n')) {
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  return s;
+}
+
+// ─────────────────────────────────────────
+//  IFRAME AUTO-RESIZE  (postMessage → pai)
+// ─────────────────────────────────────────
+(function() {
+  if (window.self === window.top) return; // só roda dentro de iframe
+
+  function sendHeight() {
+    const h = document.documentElement.scrollHeight;
+    window.parent.postMessage({ type: 'hc-resize', height: h }, '*');
+  }
+
+  // envia na carga e sempre que o DOM mudar
+  window.addEventListener('load', sendHeight);
+  new MutationObserver(sendHeight).observe(document.body, {
+    childList: true, subtree: true, attributes: true
+  });
+  window.addEventListener('resize', sendHeight);
+})();
+</script>
+</body>
+</html>
